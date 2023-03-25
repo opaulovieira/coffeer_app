@@ -2,19 +2,15 @@ import 'package:coffee_api/coffee_api.dart';
 import 'package:test/test.dart';
 
 void main() {
+  const dataUrl = 'https://coffee.alexflipnote.dev/W7W69vnJ02A_coffee.jpg';
+
   group('CoffeeUrl', () {
-    const data = <String, Object?>{
-      'file': 'https://coffee.alexflipnote.dev/W7W69vnJ02A_coffee.jpg'
-    };
+    const data = <String, Object?>{'file': dataUrl};
 
-    const coffeeUrl = CoffeeUrl(
-      url: 'https://coffee.alexflipnote.dev/W7W69vnJ02A_coffee.jpg',
-    );
+    const coffeeUrl = CoffeeUrl(url: dataUrl);
 
-    test('supports value equality.', () {
-      const coffeeUrl2 = CoffeeUrl(
-        url: 'https://coffee.alexflipnote.dev/W7W69vnJ02A_coffee.jpg',
-      );
+    test('supports value equality', () {
+      const coffeeUrl2 = CoffeeUrl(url: dataUrl);
 
       expect(coffeeUrl, equals(coffeeUrl2));
     });
