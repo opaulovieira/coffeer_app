@@ -17,7 +17,7 @@ part 'coffee_url.g.dart';
 /// {@endtemplate}
 class CoffeeUrl {
   /// {@macro coffee_url}
-  CoffeeUrl({required this.url});
+  const CoffeeUrl({required this.url});
 
   /// Factory which converts a [Map<String, Object?>] into a [CoffeeUrl].
   factory CoffeeUrl.fromJson(Map<String, Object?> json) =>
