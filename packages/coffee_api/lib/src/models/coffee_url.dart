@@ -4,8 +4,6 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'coffee_url.g.dart';
 
-@JsonSerializable()
-
 /// {@template coffee_url}
 /// A URL holder for [CoffeeApi]
 ///
@@ -16,6 +14,7 @@ part 'coffee_url.g.dart';
 /// }
 /// ```
 /// {@endtemplate}
+@JsonSerializable()
 class CoffeeUrl extends Equatable {
   /// {@macro coffee_url}
   const CoffeeUrl({required this.url});
