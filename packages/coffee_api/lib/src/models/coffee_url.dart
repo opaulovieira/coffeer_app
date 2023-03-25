@@ -1,4 +1,5 @@
 import 'package:coffee_api/coffee_api.dart';
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'coffee_url.g.dart';
@@ -15,7 +16,7 @@ part 'coffee_url.g.dart';
 /// }
 /// ```
 /// {@endtemplate}
-class CoffeeUrl {
+class CoffeeUrl extends Equatable {
   /// {@macro coffee_url}
   const CoffeeUrl({required this.url});
 
@@ -29,4 +30,7 @@ class CoffeeUrl {
   /// Image URL for [CoffeeUrl]
   @JsonKey(name: 'file')
   final String url;
+
+  @override
+  List<Object?> get props => [url];
 }
