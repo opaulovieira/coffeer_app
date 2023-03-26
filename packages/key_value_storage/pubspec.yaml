@@ -1,0 +1,24 @@
+name: key_value_storage
+description: A Very Good Project created by Very Good CLI.
+version: 0.2.0
+publish_to: none
+
+environment:
+  sdk: ">=2.18.0 <3.0.0"
+  flutter: 3.3.0
+
+dependencies:
+  equatable: ^2.0.5
+  flutter:
+    sdk: flutter
+  hive: ^2.2.3
+  meta: ^1.8.0
+  path_provider: ^2.0.14
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  mocktail: ^0.3.0
+  path_provider_platform_interface: ^2.0.6
+  plugin_platform_interface: ^2.1.4
+  very_good_analysis: ^3.1.0
