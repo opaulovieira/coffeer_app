@@ -1,5 +1,37 @@
+import 'dart:async';
+import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
+extension ImageTool on ImageProvider {
+  Future<Uint8List?> getBytes(
+    BuildContext context, {
+    ImageByteFormat format = ImageByteFormat.rawRgba,
+  }) async {
+    final completer = Completer<Uint8List?>();
+
+    final imageStream = resolve(createLocalImageConfiguration(context));
+    final listener = ImageStreamListener(
+      (imageInfo, synchronousCall) async {
+        final bytes = await imageInfo.image.toByteData(format: format);
+
+        if (!completer.isCompleted) {
+          completer.complete(bytes?.buffer.asUint8List());
+        }
+      },
+    );
+
+    imageStream.addListener(listener);
+
+    final imageBytes = await completer.future;
+
+    imageStream.removeListener(listener);
+
+    return imageBytes;
+  }
+}
 
 class CarouselView extends StatelessWidget {
   const CarouselView({super.key, required this.urlFutureList});
