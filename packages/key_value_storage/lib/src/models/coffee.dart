@@ -25,5 +25,5 @@ class Coffee extends Equatable {
   final Uint8List bytes;
 
   @override
-  List<Object?> get props => [url, bytes];
+  List<Object?> get props => [bytes];
 }
