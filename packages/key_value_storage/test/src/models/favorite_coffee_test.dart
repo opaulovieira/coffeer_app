@@ -7,12 +7,12 @@ void main() {
   const dataUrl = 'https://coffee.alexflipnote.dev/W7W69vnJ02A_coffee.jpg';
   final dataBytes = Uint8List.fromList([1, 2, 3, 4]);
 
-  group('Coffee', () {
-    final coffee = Coffee(url: dataUrl, bytes: dataBytes);
+  group('FavoriteCoffee', () {
+    final coffee = FavoriteCoffee(url: dataUrl, bytes: dataBytes);
 
     test('supports value equality, which depends only on bytes property', () {
-      final coffee2 = Coffee(url: dataUrl, bytes: dataBytes);
-      final coffee3 = Coffee(url: '', bytes: dataBytes);
+      final coffee2 = FavoriteCoffee(url: dataUrl, bytes: dataBytes);
+      final coffee3 = FavoriteCoffee(bytes: dataBytes);
 
       expect(coffee, equals(coffee2));
       expect(coffee, equals(coffee3));
