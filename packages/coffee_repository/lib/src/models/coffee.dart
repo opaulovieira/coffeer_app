@@ -1,9 +1,11 @@
 import 'dart:typed_data';
 
+import 'package:equatable/equatable.dart';
+
 /// {@template coffee}
 /// A Coffee object that holds both image and favorite information
 /// {@endtemplate}
-class Coffee {
+class Coffee extends Equatable {
   /// {@macro coffee}
   const Coffee({
     required this.bytes,
@@ -19,4 +21,7 @@ class Coffee {
 
   /// Url used to request the [Coffee] image
   final String? url;
+
+  @override
+  List<Object?> get props => [isFavorite, bytes];
 }
