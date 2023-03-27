@@ -1,5 +1,5 @@
 import 'package:hive/hive.dart';
-import 'package:key_value_storage/src/models/coffee.dart';
+import 'package:key_value_storage/src/models/favorite_coffee.dart';
 import 'package:meta/meta.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -8,7 +8,7 @@ import 'package:path_provider/path_provider.dart';
 /// single place.
 ///
 /// To use this class, simply unwrap one of its exposed boxes, like
-/// [favoriteCoffeeImagesBox], and execute operations in it, for example:
+/// [favoriteCoffeeBox], and execute operations in it, for example:
 ///
 /// ```
 /// (await favoriteCoffeeImagesBox).clear();
@@ -19,7 +19,7 @@ class KeyValueStorage {
     @visibleForTesting HiveInterface? hive,
   }) : _hive = hive ?? Hive {
     try {
-      _hive.registerAdapter<Coffee>(CoffeeAdapter());
+      _hive.registerAdapter<FavoriteCoffee>(FavoriteCoffeeAdapter());
     } catch (_) {
       throw Exception(
         "You shouldn't have more than one [KeyValueStorage] instance in your "
@@ -28,7 +28,7 @@ class KeyValueStorage {
     }
   }
 
-  static const _favoriteCoffeeImagesBoxKey = 'favorite-coffee-images-box';
+  static const _favoriteCoffeeBoxKey = 'favorite-coffee-box';
 
   final HiveInterface _hive;
 
@@ -36,8 +36,8 @@ class KeyValueStorage {
   ///
   /// Because not all images have an url to later fetching, this box doesn't
   /// cache temporarily, otherwise, the OS would delete the image at any time.
-  Future<Box<Coffee>> get favoriteCoffeeImagesBox {
-    return _openHiveBox(_favoriteCoffeeImagesBoxKey, isTemporary: false);
+  Future<Box<FavoriteCoffee>> get favoriteCoffeeBox {
+    return _openHiveBox(_favoriteCoffeeBoxKey, isTemporary: false);
   }
 
   Future<Box<T>> _openHiveBox<T>(

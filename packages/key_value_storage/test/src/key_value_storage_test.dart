@@ -26,7 +26,7 @@ class _FakePathProviderPlatform extends Fake
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  late Box<Coffee> favoriteCoffeeImagesBox;
+  late Box<FavoriteCoffee> favoriteCoffeeImagesBox;
   late HiveInterface hive;
   late KeyValueStorage sut;
 
@@ -35,12 +35,12 @@ void main() {
       PathProviderPlatform.instance = _FakePathProviderPlatform();
 
       hive = _MockHive();
-      favoriteCoffeeImagesBox = _MockBox<Coffee>();
+      favoriteCoffeeImagesBox = _MockBox<FavoriteCoffee>();
 
-      registerFallbackValue(_MockTypeAdapter<Coffee>());
+      registerFallbackValue(_MockTypeAdapter<FavoriteCoffee>());
 
       when(
-        () => hive.registerAdapter<Coffee>(
+        () => hive.registerAdapter<FavoriteCoffee>(
           any(),
           internal: any(named: 'internal'),
           override: any(named: 'override'),
@@ -50,7 +50,7 @@ void main() {
       when(() => hive.isBoxOpen(any())).thenReturn(false);
 
       when(() {
-        return hive.openBox<Coffee>(
+        return hive.openBox<FavoriteCoffee>(
           any(),
           encryptionCipher: any(named: 'encryptionCipher'),
           keyComparator: any(named: 'keyComparator'),
@@ -61,7 +61,8 @@ void main() {
           collection: any(named: 'collection'),
         );
       }).thenAnswer((invocation) async => favoriteCoffeeImagesBox);
-      when(() => hive.box<Coffee>(any())).thenReturn(favoriteCoffeeImagesBox);
+      when(() => hive.box<FavoriteCoffee>(any()))
+          .thenReturn(favoriteCoffeeImagesBox);
 
       sut = KeyValueStorage(hive: hive);
     });
@@ -73,7 +74,7 @@ void main() {
     test('returns a Box in case it is already open', () async {
       when(() => hive.isBoxOpen(any())).thenReturn(true);
 
-      final box = await sut.favoriteCoffeeImagesBox;
+      final box = await sut.favoriteCoffeeBox;
 
       expect(box, equals(favoriteCoffeeImagesBox));
     });
@@ -81,7 +82,7 @@ void main() {
     test('creates a Box in case it is not open, and returns it', () async {
       when(() => hive.isBoxOpen(any())).thenReturn(false);
 
-      final box = await sut.favoriteCoffeeImagesBox;
+      final box = await sut.favoriteCoffeeBox;
 
       expect(box, equals(favoriteCoffeeImagesBox));
     });
