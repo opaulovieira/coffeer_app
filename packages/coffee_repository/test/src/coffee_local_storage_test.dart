@@ -52,13 +52,13 @@ void main() {
     });
 
     test('stores a FavoriteCoffee model on cache', () async {
-      await sut.favoriteCoffee(dataBytes, url: dataUrl);
+      await sut.favoriteCoffee(favoriteCoffee);
 
       verify(() => box.put(favoriteCoffee.bytes, favoriteCoffee));
     });
 
     test('removes a FavoriteCoffee model from cache', () async {
-      await sut.unfavoriteCoffee(dataBytes);
+      await sut.unfavoriteCoffee(favoriteCoffee);
 
       verify(() => box.delete(favoriteCoffee.bytes));
     });
@@ -77,13 +77,14 @@ void main() {
     });
 
     test('returns if a FavoriteCoffee model is stored or not', () async {
-      final isFavoriteBeforeCaching = await sut.isCoffeeFavorite(dataBytes);
+      final isFavoriteBeforeCaching =
+          await sut.isCoffeeFavorite(favoriteCoffee);
 
       expect(isFavoriteBeforeCaching, isFalse);
 
       when(() => box.get(any<Uint8List>())).thenReturn(favoriteCoffee);
 
-      final isFavoriteAfterCaching = await sut.isCoffeeFavorite(dataBytes);
+      final isFavoriteAfterCaching = await sut.isCoffeeFavorite(favoriteCoffee);
 
       expect(isFavoriteAfterCaching, isTrue);
     });

@@ -1,5 +1,6 @@
 import 'package:coffee_api/coffee_api.dart';
 import 'package:coffee_repository/coffee_repository.dart';
+import 'package:key_value_storage/key_value_storage.dart';
 
 /// {@template coffee_repository}
 /// Repository to access coffee data from both CoffeeApi and KeyValueStorage
@@ -27,14 +28,16 @@ class CoffeeRepository {
   /// Returns a [Coffee] object, which already checks if it is favorite or not
   Future<Coffee> getRandomCoffee() async {
     final bytes = await api.getCoffeeBytes();
-    final isFavorite = await storage.isCoffeeFavorite(bytes);
+    final coffee = Coffee(bytes: bytes);
+
+    final isFavorite = await storage.isCoffeeFavorite(coffee.toLocalModel());
 
     return Coffee(bytes: bytes, isFavorite: isFavorite);
   }
 
   /// Verify if the [Coffee] is cached on local storage
   Future<bool> isCoffeeFavorite(Coffee coffee) {
-    return storage.isCoffeeFavorite(coffee.bytes);
+    return storage.isCoffeeFavorite(coffee.toLocalModel());
   }
 
   /// Obtain all favorite [Coffee] from local storage
@@ -52,12 +55,18 @@ class CoffeeRepository {
 
   /// Favorites, and caches, the [Coffee] data on local storage
   Future<void> favoriteCoffee(Coffee coffee) {
-    return storage.favoriteCoffee(coffee.bytes, url: coffee.url);
+    return storage.favoriteCoffee(coffee.toLocalModel());
   }
 
   /// Unfavorites, and deletes from cache, the [Coffee] data on
   /// local storage
   Future<void> unfavoriteCoffee(Coffee coffee) {
-    return storage.unfavoriteCoffee(coffee.bytes);
+    return storage.unfavoriteCoffee(coffee.toLocalModel());
+  }
+}
+
+extension on Coffee {
+  FavoriteCoffee toLocalModel() {
+    return FavoriteCoffee(bytes: bytes, url: url);
   }
 }

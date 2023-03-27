@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:key_value_storage/key_value_storage.dart';
 
 /// {@template coffee_local_storage}
@@ -15,18 +13,18 @@ class CoffeeLocalStorage {
   final KeyValueStorage storage;
 
   /// Favorites, and caches, the coffee image data on local storage
-  Future<void> favoriteCoffee(Uint8List bytes, {String? url}) async {
+  Future<void> favoriteCoffee(FavoriteCoffee coffee) async {
     final box = await storage.favoriteCoffeeBox;
 
-    await box.put(bytes, FavoriteCoffee(bytes: bytes, url: url));
+    await box.put(coffee.bytes, coffee);
   }
 
   /// Unfavorites, and deletes from cache, the coffee image data on
   /// local storage
-  Future<void> unfavoriteCoffee(Uint8List bytes) async {
+  Future<void> unfavoriteCoffee(FavoriteCoffee coffee) async {
     final box = await storage.favoriteCoffeeBox;
 
-    await box.delete(bytes);
+    await box.delete(coffee.bytes);
   }
 
   /// Obtain all favorite coffee from local storage
@@ -37,9 +35,9 @@ class CoffeeLocalStorage {
   }
 
   /// Verify if the coffee bytes is cached on local storage
-  Future<bool> isCoffeeFavorite(Uint8List bytes) async {
+  Future<bool> isCoffeeFavorite(FavoriteCoffee favoriteCoffee) async {
     final box = await storage.favoriteCoffeeBox;
-    final coffee = box.get(bytes);
+    final coffee = box.get(favoriteCoffee.bytes);
 
     return coffee != null;
   }
