@@ -21,5 +21,11 @@ void main() {
       expect(coffee, equals(coffee3));
       expect(coffee == coffee4, isFalse);
     });
+
+    test('supports copyWith pattern', () {
+      final coffee2 = coffee.copyWith(isFavorite: false);
+
+      expect(coffee2, equals(Coffee(url: dataUrl, bytes: dataBytes)));
+    });
   });
 }
