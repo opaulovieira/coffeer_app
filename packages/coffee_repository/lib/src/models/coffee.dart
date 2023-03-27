@@ -22,6 +22,15 @@ class Coffee extends Equatable {
   /// Url used to request the [Coffee] image
   final String? url;
 
+  /// Creates a copy of [Coffee] object
+  Coffee copyWith({bool? isFavorite, Uint8List? bytes, String? url}) {
+    return Coffee(
+      bytes: bytes ?? this.bytes,
+      url: url ?? this.url,
+      isFavorite: isFavorite ?? this.isFavorite,
+    );
+  }
+
   @override
   List<Object?> get props => [isFavorite, bytes];
 }
