@@ -8,8 +8,12 @@ environment:
   flutter: 3.3.0
 
 dependencies:
+  coffee_api:
+    path: ../coffee_api
   flutter:
     sdk: flutter
+  key_value_storage:
+    path: ../key_value_storage
 
 dev_dependencies:
   flutter_test:
