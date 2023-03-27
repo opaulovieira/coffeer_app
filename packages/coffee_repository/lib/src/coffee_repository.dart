@@ -32,7 +32,7 @@ class CoffeeRepository {
 
     final isFavorite = await storage.isCoffeeFavorite(coffee.toLocalModel());
 
-    return Coffee(bytes: bytes, isFavorite: isFavorite);
+    return coffee.copyWith(isFavorite: isFavorite);
   }
 
   /// Verify if the [Coffee] is cached on local storage
