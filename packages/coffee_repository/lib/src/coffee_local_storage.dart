@@ -16,7 +16,7 @@ class CoffeeLocalStorage {
   Future<void> favoriteCoffee(FavoriteCoffee coffee) async {
     final box = await storage.favoriteCoffeeBox;
 
-    await box.put(coffee.bytes, coffee);
+    await box.put(coffee.bytes.toString(), coffee);
   }
 
   /// Unfavorites, and deletes from cache, the coffee image data on
@@ -24,7 +24,7 @@ class CoffeeLocalStorage {
   Future<void> unfavoriteCoffee(FavoriteCoffee coffee) async {
     final box = await storage.favoriteCoffeeBox;
 
-    await box.delete(coffee.bytes);
+    await box.delete(coffee.bytes.toString());
   }
 
   /// Obtain all favorite coffee from local storage
@@ -37,7 +37,7 @@ class CoffeeLocalStorage {
   /// Verify if the coffee bytes is cached on local storage
   Future<bool> isCoffeeFavorite(FavoriteCoffee favoriteCoffee) async {
     final box = await storage.favoriteCoffeeBox;
-    final coffee = box.get(favoriteCoffee.bytes);
+    final coffee = box.get(favoriteCoffee.bytes.toString());
 
     return coffee != null;
   }
