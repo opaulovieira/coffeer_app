@@ -11,20 +11,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc({
     required CoffeeRepository coffeeRepository,
     this.initialCoffeeQuantity = 15,
-    this.maximumAccumulatedCoffeeQuantity = 50,
   })  : _coffeeRepository = coffeeRepository,
-        // TODO(paulosilva): decide if it is a good idea to have an asset here
-        assert(
-            initialCoffeeQuantity <= maximumAccumulatedCoffeeQuantity,
-            'should not request more coffee ($initialCoffeeQuantity) than '
-            'allowed ($maximumAccumulatedCoffeeQuantity)'),
         super(const Loading()) {
     on<OnRequestImages>(_onRequestImages());
     on<OnImageBytesLoad>(_onImageBytesLoad());
   }
 
   final int initialCoffeeQuantity;
-  final int maximumAccumulatedCoffeeQuantity;
   final CoffeeRepository _coffeeRepository;
 
   EventHandler<OnRequestImages, HomeState> _onRequestImages() {
@@ -41,10 +34,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         if (state is Success && event.shouldAccumulate) {
           emit(
             Success(
-              coffeeUrlList: [...state.coffeeUrlList, ...coffeeUrList]
-                  .takeLast(maximumAccumulatedCoffeeQuantity),
-              loadedCoffeeList: state.loadedCoffeeList
-                  .takeLast(maximumAccumulatedCoffeeQuantity),
+              coffeeUrlList: [...state.coffeeUrlList, ...coffeeUrList],
+              loadedCoffeeList: state.loadedCoffeeList,
             ),
           );
         } else {
@@ -75,11 +66,5 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         );
       }
     };
-  }
-}
-
-extension _TakeLast<T> on List<T> {
-  List<T> takeLast(int count) {
-    return reversed.take(count).toList().reversed.toList();
   }
 }

@@ -41,6 +41,16 @@ class HomeView extends StatelessWidget {
               return Column(
                 children: [
                   CarouselView(urlList: state.coffeeUrlList),
+                  Expanded(
+                    child: TextButton(
+                      child: const Text('request more'),
+                      onPressed: () {
+                        BlocProvider.of<HomeBloc>(context).add(
+                          const OnRequestImages(shouldAccumulate: true),
+                        );
+                      },
+                    ),
+                  ),
                 ],
               );
             } else if (state is Loading) {
