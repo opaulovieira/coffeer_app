@@ -25,5 +25,5 @@ class FavoriteCoffee extends Equatable {
   final Uint8List bytes;
 
   @override
-  List<Object?> get props => [bytes];
+  List<Object?> get props => [bytes, url];
 }
