@@ -32,5 +32,5 @@ class Coffee extends Equatable {
   }
 
   @override
-  List<Object?> get props => [isFavorite, bytes];
+  List<Object?> get props => [isFavorite, bytes, url];
 }

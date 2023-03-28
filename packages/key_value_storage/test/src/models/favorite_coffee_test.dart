@@ -10,12 +10,12 @@ void main() {
   group('FavoriteCoffee', () {
     final coffee = FavoriteCoffee(url: dataUrl, bytes: dataBytes);
 
-    test('supports value equality, which depends only on bytes property', () {
+    test('supports value equality', () {
       final coffee2 = FavoriteCoffee(url: dataUrl, bytes: dataBytes);
       final coffee3 = FavoriteCoffee(bytes: dataBytes);
 
       expect(coffee, equals(coffee2));
-      expect(coffee, equals(coffee3));
+      expect(coffee == coffee3, isFalse);
     });
   });
 }
