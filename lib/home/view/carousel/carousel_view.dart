@@ -34,9 +34,9 @@ extension ImageTool on ImageProvider {
 }
 
 class CarouselView extends StatelessWidget {
-  const CarouselView({super.key, required this.urlFutureList});
+  const CarouselView({super.key, required this.urlList});
 
-  final List<Future<String>> urlFutureList;
+  final List<String> urlList;
 
   @override
   Widget build(BuildContext context) {
@@ -44,37 +44,17 @@ class CarouselView extends StatelessWidget {
 
     return SizedBox(
       height: smallestImageSideDimension,
-      child: FutureBuilder<List<String>>(
-        future: Future.wait<String>(urlFutureList),
-        builder: (context, snapshot) {
-          final urlList = snapshot.data;
-
-          if (urlList != null &&
-              snapshot.connectionState == ConnectionState.done) {
-            return ListView.separated(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) {
-                return CarouselItem(
-                  url: urlList[index],
-                  smallestImageSideDimension: smallestImageSideDimension,
-                );
-              },
-              separatorBuilder: (context, index) => const SizedBox(width: 16),
-              itemCount: urlList.length,
-            );
-          } else if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (snapshot.hasError) {
-            return const Center(
-              child: Text('Something went wrong!'),
-            );
-          } else {
-            throw StateError('An unrecognized state happened at CarouselView');
-          }
+      child: ListView.separated(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        scrollDirection: Axis.horizontal,
+        itemBuilder: (context, index) {
+          return CarouselItem(
+            url: urlList[index],
+            smallestImageSideDimension: smallestImageSideDimension,
+          );
         },
+        separatorBuilder: (context, index) => const SizedBox(width: 16),
+        itemCount: urlList.length,
       ),
     );
   }

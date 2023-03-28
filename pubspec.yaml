@@ -11,12 +11,17 @@ dependencies:
   cached_network_image: ^3.2.3
   coffee_api:
     path: packages/coffee_api
+  coffee_repository:
+    path: packages/coffee_repository
+  equatable: ^2.0.5
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.2
   flutter_localizations:
     sdk: flutter
   intl: ^0.17.0
+  key_value_storage:
+    path: packages/key_value_storage
 
 dev_dependencies:
   bloc_test: ^9.1.1

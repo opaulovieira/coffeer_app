@@ -104,6 +104,13 @@ packages:
       relative: true
     source: path
     version: "0.2.0"
+  coffee_repository:
+    dependency: "direct main"
+    description:
+      path: "packages/coffee_repository"
+      relative: true
+    source: path
+    version: "0.2.1"
   collection:
     dependency: transitive
     description:
@@ -153,7 +160,7 @@ packages:
     source: hosted
     version: "5.0.3"
   equatable:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: equatable
       sha256: c2b87cb7756efdf69892005af546c56c0b5037f54d2a88269b4f347a505e3ca2
@@ -239,6 +246,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  hive:
+    dependency: transitive
+    description:
+      name: hive
+      sha256: "8dcf6db979d7933da8217edcec84e9df1bdb4e4edc7fc77dbd5aa74356d6d941"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.3"
   http:
     dependency: transitive
     description:
@@ -295,6 +310,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.8.0"
+  key_value_storage:
+    dependency: "direct main"
+    description:
+      path: "packages/key_value_storage"
+      relative: true
+    source: path
+    version: "0.2.2"
   logging:
     dependency: transitive
     description:
