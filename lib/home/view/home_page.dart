@@ -32,7 +32,6 @@ class HomeView extends StatelessWidget {
             if (state is Success) {
               return Column(
                 children: [
-                  CarouselView(urlList: state.coffeeUrlList),
                   Expanded(
                     child: TextButton(
                       child: const Text('request more'),
@@ -43,6 +42,8 @@ class HomeView extends StatelessWidget {
                       },
                     ),
                   ),
+                  CarouselView(urlList: state.coffeeUrlList),
+                  const SizedBox(height: 48),
                 ],
               );
             } else if (state is Loading) {

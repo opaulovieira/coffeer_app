@@ -3,9 +3,7 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:coffee_repository/coffee_repository.dart';
-import 'package:coffeer_app/carousel/bloc/carousel_bloc.dart';
-import 'package:coffeer_app/carousel/bloc/carousel_event.dart';
-import 'package:coffeer_app/carousel/bloc/carousel_state.dart';
+import 'package:coffeer_app/carousel/bloc/carousel_cubit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,9 +23,9 @@ class CarouselView extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16),
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
-          return BlocProvider<CarouselBloc>(
+          return BlocProvider<CarouselCubit>(
             create: (context) {
-              return CarouselBloc(
+              return CarouselCubit(
                 url: urlList[index],
                 coffeeRepository:
                     RepositoryProvider.of<CoffeeRepository>(context),
@@ -62,20 +60,7 @@ class CarouselItem extends StatefulWidget {
 
 class _CarouselItemState extends State<CarouselItem>
     with AutomaticKeepAliveClientMixin {
-  final bytesFuture = Completer<Uint8List?>();
-
-  @override
-  void initState() {
-    super.initState();
-
-    bytesFuture.future.then((bytes) {
-      if (mounted) {
-        BlocProvider.of<CarouselBloc>(context).add(
-          ImageBytesLoad(bytes: bytes),
-        );
-      }
-    });
-  }
+  final bytesCompleter = Completer<Uint8List?>();
 
   @override
   bool get wantKeepAlive => true;
@@ -87,61 +72,59 @@ class _CarouselItemState extends State<CarouselItem>
     final smallestImageSideDimension = widget.smallestImageSideDimension ??
         MediaQuery.of(context).size.width * .45;
 
-    return GestureDetector(
-      onDoubleTap: () {
-        BlocProvider.of<CarouselBloc>(context).add(
-          const ToggleFavoriteStateCoffee(),
-        );
-      },
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxHeight: smallestImageSideDimension,
-          maxWidth: smallestImageSideDimension * 2,
-        ),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            CachedNetworkImage(
-              imageUrl: widget.url,
-              fit: BoxFit.fitHeight,
-              imageBuilder: (context, image) {
-                if (!bytesFuture.isCompleted) {
-                  bytesFuture.complete(image.getBytes(context));
-                }
+    return ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: smallestImageSideDimension,
+        maxWidth: smallestImageSideDimension * 2,
+      ),
+      child: CachedNetworkImage(
+        imageUrl: widget.url,
+        fit: BoxFit.fitHeight,
+        imageBuilder: (context, image) {
+          if (!bytesCompleter.isCompleted) {
+            bytesCompleter.complete(image.getBytes(context));
+          }
 
-                return ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: Image(image: image),
-                );
-              },
-              progressIndicatorBuilder: (context, url, download) {
-                return SizedBox(
-                  width: smallestImageSideDimension / 2,
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: CircularProgressIndicator(
-                      value: download.progress,
+          return BlocBuilder<CarouselCubit, bool>(
+            builder: (context, isFavorite) {
+              return GestureDetector(
+                onDoubleTap: () {
+                  final cubit = BlocProvider.of<CarouselCubit>(context);
+
+                  if (isFavorite) {
+                    cubit.unfavorite();
+                  } else {
+                    cubit.favorite(bytesCompleter.future);
+                  }
+                },
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: Image(image: image),
                     ),
-                  ),
-                );
-              },
+                    Icon(
+                      Icons.favorite,
+                      color: isFavorite ? Colors.red : Colors.black,
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+        progressIndicatorBuilder: (context, url, download) {
+          return SizedBox(
+            width: smallestImageSideDimension / 2,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: CircularProgressIndicator(
+                value: download.progress,
+              ),
             ),
-            BlocBuilder<CarouselBloc, CarouselState>(
-              builder: (context, state) {
-                if (state is Idle) {
-                  final isFavorite = state.coffee?.isFavorite ?? false;
-
-                  return Icon(
-                    Icons.favorite,
-                    color: isFavorite ? Colors.red : Colors.black,
-                  );
-                } else {
-                  return const SizedBox.shrink();
-                }
-              },
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
