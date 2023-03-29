@@ -13,3 +13,11 @@ class OnRequestImages implements HomeEvent {
   @override
   bool? get stringify => true;
 }
+
+class TryAgain implements HomeEvent {
+  @override
+  List<Object?> get props => [];
+
+  @override
+  bool? get stringify => true;
+}
