@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:bloc/bloc.dart';
 import 'package:coffee_repository/coffee_repository.dart';
 import 'package:equatable/equatable.dart';
@@ -14,7 +12,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   })  : _coffeeRepository = coffeeRepository,
         super(const Loading()) {
     on<OnRequestImages>(_onRequestImages());
-    on<OnImageBytesLoad>(_onImageBytesLoad());
   }
 
   final int initialCoffeeQuantity;
@@ -44,26 +41,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       } catch (error) {
         // TODO(paulosilva): add log (error, stackTrace)
         emit(Error(error: error));
-      }
-    };
-  }
-
-  EventHandler<OnImageBytesLoad, HomeState> _onImageBytesLoad() {
-    return (event, emit) async {
-      final state = this.state;
-      if (state is Success) {
-        final coffee = Coffee(bytes: event.bytes, url: event.url);
-        final isFavorite = await _coffeeRepository.isCoffeeFavorite(coffee);
-
-        emit(
-          Success(
-            coffeeUrlList: state.coffeeUrlList,
-            loadedCoffeeList: [
-              ...state.loadedCoffeeList,
-              coffee.copyWith(isFavorite: isFavorite),
-            ],
-          ),
-        );
       }
     };
   }
