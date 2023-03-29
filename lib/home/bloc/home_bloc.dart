@@ -31,8 +31,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         if (state is Success && event.shouldAccumulate) {
           emit(
             Success(
-              coffeeUrlList:
-                  {...state.coffeeUrlList, ...coffeeUrlList}.toList(),
+              coffeeUrlList: {...coffeeUrlList}.toList(),
               loadedCoffeeList: state.loadedCoffeeList,
             ),
           );

@@ -32,17 +32,15 @@ class HomeView extends StatelessWidget {
             if (state is Success) {
               return Column(
                 children: [
-                  Expanded(
-                    child: TextButton(
-                      child: const Text('request more'),
-                      onPressed: () {
-                        BlocProvider.of<HomeBloc>(context).add(
-                          const OnRequestImages(shouldAccumulate: true),
-                        );
-                      },
-                    ),
+                  const Spacer(),
+                  CarouselView(
+                    urlList: state.coffeeUrlList,
+                    onRequestMore: () {
+                      BlocProvider.of<HomeBloc>(context).add(
+                        const OnRequestImages(shouldAccumulate: true),
+                      );
+                    },
                   ),
-                  CarouselView(urlList: state.coffeeUrlList),
                   const SizedBox(height: 48),
                 ],
               );
