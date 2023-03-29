@@ -25,7 +25,7 @@ class Success implements HomeState {
   List<Object?> get props => [coffeeUrlList, loadedCoffeeList];
 
   @override
-  bool? get stringify => true;
+  bool? get stringify => false;
 
   @override
   String toString() {
@@ -43,5 +43,10 @@ class Error implements HomeState {
   List<Object?> get props => [error];
 
   @override
-  bool? get stringify => true;
+  bool? get stringify => false;
+
+  @override
+  String toString() {
+    return 'Error(error: $error)';
+  }
 }
