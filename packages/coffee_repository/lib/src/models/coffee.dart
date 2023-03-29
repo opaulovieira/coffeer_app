@@ -9,7 +9,7 @@ class Coffee extends Equatable {
   /// {@macro coffee}
   const Coffee({
     required this.bytes,
-    this.url,
+    required this.url,
     this.isFavorite = false,
   });
 
@@ -20,7 +20,7 @@ class Coffee extends Equatable {
   final Uint8List bytes;
 
   /// Url used to request the [Coffee] image
-  final String? url;
+  final String url;
 
   /// Creates a copy of [Coffee] object
   Coffee copyWith({bool? isFavorite, Uint8List? bytes, String? url}) {
@@ -32,5 +32,5 @@ class Coffee extends Equatable {
   }
 
   @override
-  List<Object?> get props => [isFavorite, bytes, url];
+  List<Object?> get props => [isFavorite, url];
 }
