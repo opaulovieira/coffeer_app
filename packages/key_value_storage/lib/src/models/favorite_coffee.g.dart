@@ -18,7 +18,7 @@ class FavoriteCoffeeAdapter extends TypeAdapter<FavoriteCoffee> {
     };
     return FavoriteCoffee(
       bytes: fields[1] as Uint8List,
-      url: fields[0] as String?,
+      url: fields[0] as String,
     );
   }
 

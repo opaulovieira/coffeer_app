@@ -25,16 +25,6 @@ class CoffeeRepository {
     return urlHolder.url;
   }
 
-  /// Returns a [Coffee] object, which already checks if it is favorite or not
-  Future<Coffee> getRandomCoffee() async {
-    final bytes = await api.getCoffeeBytes();
-    final coffee = Coffee(bytes: bytes);
-
-    final isFavorite = await storage.isCoffeeFavorite(coffee.toLocalModel());
-
-    return coffee.copyWith(isFavorite: isFavorite);
-  }
-
   /// Verify if the [Coffee] is cached on local storage
   Future<bool> isCoffeeFavorite(Coffee coffee) {
     return storage.isCoffeeFavorite(coffee.toLocalModel());

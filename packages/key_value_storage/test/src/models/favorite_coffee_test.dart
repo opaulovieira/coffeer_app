@@ -12,7 +12,7 @@ void main() {
 
     test('supports value equality', () {
       final coffee2 = FavoriteCoffee(url: dataUrl, bytes: dataBytes);
-      final coffee3 = FavoriteCoffee(bytes: dataBytes);
+      final coffee3 = FavoriteCoffee(url: '', bytes: dataBytes);
 
       expect(coffee, equals(coffee2));
       expect(coffee == coffee3, isFalse);

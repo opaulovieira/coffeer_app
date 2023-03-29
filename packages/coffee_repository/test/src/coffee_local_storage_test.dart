@@ -54,13 +54,13 @@ void main() {
     test('stores a FavoriteCoffee model on cache', () async {
       await sut.favoriteCoffee(favoriteCoffee);
 
-      verify(() => box.put(favoriteCoffee.bytes, favoriteCoffee));
+      verify(() => box.put(favoriteCoffee.url, favoriteCoffee));
     });
 
     test('removes a FavoriteCoffee model from cache', () async {
       await sut.unfavoriteCoffee(favoriteCoffee);
 
-      verify(() => box.delete(favoriteCoffee.bytes));
+      verify(() => box.delete(favoriteCoffee.url));
     });
 
     test('returns a FavoriteCoffee model list from cache', () async {

@@ -66,18 +66,6 @@ void main() {
       expect(url, equals(dataUrl));
     });
 
-    test('fetchs a Coffee, and verify if it is already favorite', () async {
-      when(() => coffeeLocalStorage.isCoffeeFavorite(any()))
-          .thenAnswer((invocation) async => true);
-
-      final coffee = await sut.getRandomCoffee();
-
-      expect(
-        coffee,
-        equals(Coffee(bytes: dataBytes, url: dataUrl, isFavorite: true)),
-      );
-    });
-
     test('verifies if a Coffee is favorite', () async {
       when(() => coffeeLocalStorage.isCoffeeFavorite(any()))
           .thenAnswer((invocation) async => true);
