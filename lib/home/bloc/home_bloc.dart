@@ -8,7 +8,7 @@ part 'home_state.dart';
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc({
     required CoffeeRepository coffeeRepository,
-    this.initialCoffeeQuantity = 15,
+    this.initialCoffeeQuantity = 1,
   })  : _coffeeRepository = coffeeRepository,
         super(const Loading()) {
     on<OnRequestImages>(_onRequestImages());
@@ -20,7 +20,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   EventHandler<OnRequestImages, HomeState> _onRequestImages() {
     return (event, emit) async {
       try {
-        final coffeeUrList = await Future.wait<String>(
+        final coffeeUrlList = await Future.wait<String>(
           List.generate(
             initialCoffeeQuantity,
             (index) => _coffeeRepository.getRandomCoffeeUrl(),
@@ -31,12 +31,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         if (state is Success && event.shouldAccumulate) {
           emit(
             Success(
-              coffeeUrlList: [...state.coffeeUrlList, ...coffeeUrList],
+              coffeeUrlList:
+                  {...state.coffeeUrlList, ...coffeeUrlList}.toList(),
               loadedCoffeeList: state.loadedCoffeeList,
             ),
           );
         } else {
-          emit(Success(coffeeUrlList: coffeeUrList));
+          emit(Success(coffeeUrlList: coffeeUrlList));
         }
       } catch (error) {
         // TODO(paulosilva): add log (error, stackTrace)
