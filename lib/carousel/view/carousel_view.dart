@@ -104,9 +104,20 @@ class _CarouselItemState extends State<CarouselItem>
                       borderRadius: BorderRadius.circular(16),
                       child: Image(image: image),
                     ),
-                    Icon(
-                      Icons.favorite,
-                      color: isFavorite ? Colors.red : Colors.black,
+                    Positioned(
+                      bottom: 0,
+                      child: Icon(
+                        isFavorite
+                            ? Icons.favorite_rounded
+                            : Icons.favorite_outline_rounded,
+                        color: Colors.red,
+                        shadows: const [
+                          Shadow(
+                            color: Colors.white,
+                            blurRadius: 8,
+                          )
+                        ],
+                      ),
                     ),
                   ],
                 ),
