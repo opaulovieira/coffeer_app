@@ -26,8 +26,10 @@ class CoffeeRepository {
   }
 
   /// Verify if the [Coffee] is cached on local storage
-  Future<bool> isCoffeeFavorite(Coffee coffee) {
-    return storage.isCoffeeFavorite(coffee.toLocalModel());
+  ///
+  /// It uses the [FavoriteCoffee]'s url as key
+  Future<bool> isCoffeeFavorite(String key) {
+    return storage.isCoffeeFavorite(key);
   }
 
   /// Obtain all favorite [Coffee] from local storage
@@ -50,8 +52,10 @@ class CoffeeRepository {
 
   /// Unfavorites, and deletes from cache, the [Coffee] data on
   /// local storage
-  Future<void> unfavoriteCoffee(Coffee coffee) {
-    return storage.unfavoriteCoffee(coffee.toLocalModel());
+  ///
+  /// It uses the [FavoriteCoffee]'s url as key
+  Future<void> unfavoriteCoffee(String key) {
+    return storage.unfavoriteCoffee(key);
   }
 }
 

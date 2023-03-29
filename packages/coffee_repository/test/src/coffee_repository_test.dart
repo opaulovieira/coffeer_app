@@ -70,7 +70,7 @@ void main() {
       when(() => coffeeLocalStorage.isCoffeeFavorite(any()))
           .thenAnswer((invocation) async => true);
 
-      final isFavorite = await sut.isCoffeeFavorite(coffee);
+      final isFavorite = await sut.isCoffeeFavorite(coffee.url);
 
       expect(isFavorite, isTrue);
     });
@@ -100,11 +100,10 @@ void main() {
     });
 
     test('removes a Coffee model from cache', () async {
-      await sut.unfavoriteCoffee(coffee);
+      await sut.unfavoriteCoffee(coffee.url);
 
       verify(() {
-        return coffeeLocalStorage
-            .unfavoriteCoffee(FavoriteCoffee(bytes: dataBytes, url: dataUrl));
+        return coffeeLocalStorage.unfavoriteCoffee(coffee.url);
       });
     });
   });

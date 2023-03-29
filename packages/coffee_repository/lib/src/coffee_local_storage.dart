@@ -21,10 +21,12 @@ class CoffeeLocalStorage {
 
   /// Unfavorites, and deletes from cache, the coffee image data on
   /// local storage
-  Future<void> unfavoriteCoffee(FavoriteCoffee coffee) async {
+  ///
+  /// It uses the [FavoriteCoffee]'s url as key
+  Future<void> unfavoriteCoffee(String key) async {
     final box = await storage.favoriteCoffeeBox;
 
-    await box.delete(coffee.url);
+    await box.delete(key);
   }
 
   /// Obtain all favorite coffee from local storage
@@ -35,10 +37,12 @@ class CoffeeLocalStorage {
   }
 
   /// Verify if the coffee bytes is cached on local storage
-  Future<bool> isCoffeeFavorite(FavoriteCoffee coffee) async {
+  ///
+  /// It uses the [FavoriteCoffee]'s url as key
+  Future<bool> isCoffeeFavorite(String url) async {
     final box = await storage.favoriteCoffeeBox;
 
-    final favoriteCoffee = box.get(coffee.url);
+    final favoriteCoffee = box.get(url);
 
     return favoriteCoffee != null;
   }

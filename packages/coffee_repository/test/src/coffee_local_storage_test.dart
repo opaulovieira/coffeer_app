@@ -58,7 +58,7 @@ void main() {
     });
 
     test('removes a FavoriteCoffee model from cache', () async {
-      await sut.unfavoriteCoffee(favoriteCoffee);
+      await sut.unfavoriteCoffee(favoriteCoffee.url);
 
       verify(() => box.delete(favoriteCoffee.url));
     });
@@ -78,13 +78,14 @@ void main() {
 
     test('returns if a FavoriteCoffee model is stored or not', () async {
       final isFavoriteBeforeCaching =
-          await sut.isCoffeeFavorite(favoriteCoffee);
+          await sut.isCoffeeFavorite(favoriteCoffee.url);
 
       expect(isFavoriteBeforeCaching, isFalse);
 
       when(() => box.get(any<Uint8List>())).thenReturn(favoriteCoffee);
 
-      final isFavoriteAfterCaching = await sut.isCoffeeFavorite(favoriteCoffee);
+      final isFavoriteAfterCaching =
+          await sut.isCoffeeFavorite(favoriteCoffee.url);
 
       expect(isFavoriteAfterCaching, isTrue);
     });
