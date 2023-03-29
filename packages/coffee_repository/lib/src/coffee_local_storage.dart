@@ -36,7 +36,7 @@ class CoffeeLocalStorage {
     final key = _keysMap[coffee.bytes];
 
     await box.delete(key);
-    _keysMap.remove(key);
+    _keysMap.remove(coffee.bytes);
   }
 
   /// Obtain all favorite coffee from local storage
@@ -50,8 +50,13 @@ class CoffeeLocalStorage {
   Future<bool> isCoffeeFavorite(FavoriteCoffee coffee) async {
     final box = await storage.favoriteCoffeeBox;
     final key = _keysMap[coffee.bytes];
-    final favoriteCoffee = box.get(key);
 
-    return favoriteCoffee != null;
+    if (key == null) {
+      return false;
+    } else {
+      final favoriteCoffee = box.get(key);
+
+      return favoriteCoffee != null;
+    }
   }
 }
