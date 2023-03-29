@@ -13,7 +13,7 @@ class HomePage extends StatelessWidget {
       create: (_) {
         return HomeBloc(
           coffeeRepository: RepositoryProvider.of<CoffeeRepository>(context),
-        )..add(const OnRequestImages());
+        )..add(const RequestImages());
       },
       child: const HomeView(),
     );
@@ -37,7 +37,7 @@ class HomeView extends StatelessWidget {
                     urlList: state.coffeeUrlList,
                     onRequestMore: () {
                       BlocProvider.of<HomeBloc>(context).add(
-                        const OnRequestImages(shouldAccumulate: true),
+                        const RequestImages(shouldAccumulate: true),
                       );
                     },
                   ),

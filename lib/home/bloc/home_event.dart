@@ -2,8 +2,8 @@ part of 'home_bloc.dart';
 
 abstract class HomeEvent extends Equatable {}
 
-class OnRequestImages implements HomeEvent {
-  const OnRequestImages({this.shouldAccumulate = false});
+class RequestImages implements HomeEvent {
+  const RequestImages({this.shouldAccumulate = false});
 
   final bool shouldAccumulate;
 

@@ -11,13 +11,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     this.initialCoffeeQuantity = 15,
   })  : _coffeeRepository = coffeeRepository,
         super(const Loading()) {
-    on<OnRequestImages>(_onRequestImages());
+    on<RequestImages>(_onRequestImages());
   }
 
   final int initialCoffeeQuantity;
   final CoffeeRepository _coffeeRepository;
 
-  EventHandler<OnRequestImages, HomeState> _onRequestImages() {
+  EventHandler<RequestImages, HomeState> _onRequestImages() {
     return (event, emit) async {
       try {
         final coffeeUrlList = await Future.wait<String>(
