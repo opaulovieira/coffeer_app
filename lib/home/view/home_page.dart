@@ -37,7 +37,7 @@ class HomeView extends StatelessWidget {
                     urlList: state.coffeeUrlList,
                     onRequestMore: () {
                       BlocProvider.of<HomeBloc>(context).add(
-                        const RequestImages(shouldAccumulate: true),
+                        const RequestImages(),
                       );
                     },
                   ),
@@ -49,8 +49,25 @@ class HomeView extends StatelessWidget {
                 child: CircularProgressIndicator(),
               );
             } else {
-              return const Center(
-                child: Text('something went wrong!'),
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Ops, sorry... \nSomething went wrong!',
+                      style: TextStyle(fontSize: 24),
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        BlocProvider.of<HomeBloc>(context).add(
+                          const TryAgain(),
+                        );
+                      },
+                      child: const Text('Try again'),
+                    ),
+                  ],
+                ),
               );
             }
           },

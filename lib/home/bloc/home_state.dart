@@ -13,24 +13,19 @@ class Loading implements HomeState {
 }
 
 class Success implements HomeState {
-  const Success({
-    required this.coffeeUrlList,
-    this.loadedCoffeeList = const <Coffee>[],
-  });
+  const Success({required this.coffeeUrlList});
 
   final List<String> coffeeUrlList;
-  final List<Coffee> loadedCoffeeList;
 
   @override
-  List<Object?> get props => [coffeeUrlList, loadedCoffeeList];
+  List<Object?> get props => [coffeeUrlList];
 
   @override
   bool? get stringify => false;
 
   @override
   String toString() {
-    return 'Success(loadedCoffeeList: $loadedCoffeeList,'
-        ' coffeeUrlList: $coffeeUrlList)';
+    return 'Success(coffeeUrlList: $coffeeUrlList)';
   }
 }
 
