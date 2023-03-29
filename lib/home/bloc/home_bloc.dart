@@ -8,7 +8,7 @@ part 'home_state.dart';
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc({
     required CoffeeRepository coffeeRepository,
-    this.initialCoffeeQuantity = 1,
+    this.initialCoffeeQuantity = 15,
   })  : _coffeeRepository = coffeeRepository,
         super(const Loading()) {
     on<OnRequestImages>(_onRequestImages());
