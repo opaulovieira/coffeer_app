@@ -1,8 +1,8 @@
 part of 'home_bloc.dart';
 
-abstract class HomeState extends Equatable {}
+abstract class HomeState {}
 
-class Loading implements HomeState {
+class Loading extends Equatable implements HomeState {
   const Loading();
 
   @override
@@ -12,7 +12,7 @@ class Loading implements HomeState {
   bool? get stringify => true;
 }
 
-class Success implements HomeState {
+class Success extends Equatable implements HomeState {
   const Success({required this.coffeeUrlList});
 
   final List<String> coffeeUrlList;
@@ -29,7 +29,7 @@ class Success implements HomeState {
   }
 }
 
-class Error implements HomeState {
+class Error extends Equatable implements HomeState {
   const Error({required this.error});
 
   final Object? error;
