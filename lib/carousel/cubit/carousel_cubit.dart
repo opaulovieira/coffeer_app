@@ -28,9 +28,9 @@ class CarouselCubit extends Cubit<bool> {
       final coffee = Coffee(bytes: bytes, url: url, isFavorite: state);
 
       await _coffeeRepository.favoriteCoffee(coffee);
-    }
 
-    emit(true);
+      emit(true);
+    }
   }
 
   Future<void> unfavorite() async {
