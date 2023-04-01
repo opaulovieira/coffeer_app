@@ -1,7 +1,7 @@
 import 'package:coffee_api/coffee_api.dart';
 import 'package:coffee_repository/coffee_repository.dart';
-import 'package:coffeer_app/home/home.dart';
 import 'package:coffeer_app/l10n/l10n.dart';
+import 'package:coffeer_app/page_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:key_value_storage/key_value_storage.dart';
@@ -50,7 +50,7 @@ class _AppState extends State<App> {
         ),
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        home: const HomePage(),
+        home: const PageManager(),
       ),
     );
   }
