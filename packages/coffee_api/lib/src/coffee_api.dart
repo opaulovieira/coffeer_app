@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:coffee_api/src/models/models.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
@@ -17,6 +19,14 @@ class UnsuccessfulRequestException implements Exception {
 class FailedRequestException implements Exception {
   /// {@macro failed_request_exception}
   const FailedRequestException();
+}
+
+/// {@template no_internet_request_exception}
+/// Exception which may occur in case of no internet connection
+/// {@endtemplate}
+class NoInternetRequestException implements Exception {
+  /// {@macro no_internet_request_exception}
+  const NoInternetRequestException();
 }
 
 /// {@template coffee_api}
@@ -68,6 +78,10 @@ class CoffeeApi extends CoffeeApiContract {
     } on UnsuccessfulRequestException {
       rethrow;
     } catch (error) {
+      if (error is DioError && error.error is SocketException) {
+        throw const NoInternetRequestException();
+      }
+
       throw const FailedRequestException();
     }
   }
