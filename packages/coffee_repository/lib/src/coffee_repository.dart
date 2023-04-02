@@ -1,6 +1,7 @@
 import 'package:coffee_api/coffee_api.dart';
 import 'package:coffee_repository/coffee_repository.dart';
 import 'package:key_value_storage/key_value_storage.dart';
+import 'package:uuid/uuid.dart';
 
 /// {@template coffee_repository}
 /// Repository to access coffee data from both CoffeeApi and KeyValueStorage
@@ -27,9 +28,9 @@ class CoffeeRepository {
 
   /// Verify if the [Coffee] is cached on local storage
   ///
-  /// It uses the [FavoriteCoffee]'s url as key
-  Future<bool> isCoffeeFavorite(String key) {
-    return storage.isCoffeeFavorite(key);
+  /// It uses the [FavoriteCoffee]'s id as key
+  Future<bool> isCoffeeFavorite(String id) {
+    return storage.isCoffeeFavorite(id);
   }
 
   /// Obtain all favorite [Coffee] from local storage
@@ -38,29 +39,25 @@ class CoffeeRepository {
 
     return favoriteCoffees.map((coffee) {
       return Coffee(
-        bytes: coffee.bytes,
+        id: coffee.id,
         isFavorite: true,
         url: coffee.url,
       );
     }).toList();
   }
 
-  /// Favorites, and caches, the [Coffee] data on local storage
-  Future<void> favoriteCoffee(Coffee coffee) {
-    return storage.favoriteCoffee(coffee.toLocalModel());
+  /// Favorites, and caches, the [Coffee] url data on local storage
+  Future<void> favoriteCoffee(String url) {
+    return storage.favoriteCoffee(
+      FavoriteCoffee(id: const Uuid().v4(), url: url),
+    );
   }
 
   /// Unfavorites, and deletes from cache, the [Coffee] data on
   /// local storage
   ///
-  /// It uses the [FavoriteCoffee]'s url as key
-  Future<void> unfavoriteCoffee(String key) {
-    return storage.unfavoriteCoffee(key);
-  }
-}
-
-extension on Coffee {
-  FavoriteCoffee toLocalModel() {
-    return FavoriteCoffee(bytes: bytes, url: url);
+  /// It uses the [FavoriteCoffee]'s id as key
+  Future<void> unfavoriteCoffee(String id) {
+    return storage.unfavoriteCoffee(id);
   }
 }

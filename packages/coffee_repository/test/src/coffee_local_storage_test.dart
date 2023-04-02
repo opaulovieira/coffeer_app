@@ -12,8 +12,7 @@ class _MockFavoriteBox extends Mock implements Box<FavoriteCoffee> {}
 
 void main() {
   const dataUrl = 'https://coffee.alexflipnote.dev/W7W69vnJ02A_coffee.jpg';
-  final dataBytes = Uint8List.fromList([1, 2, 3, 4]);
-  final favoriteCoffee = FavoriteCoffee(url: dataUrl, bytes: dataBytes);
+  const favoriteCoffee = FavoriteCoffee(url: dataUrl, id: '0');
 
   group('CoffeeLocalStorage', () {
     late KeyValueStorage storage;
@@ -23,7 +22,7 @@ void main() {
     setUpAll(() {
       registerFallbackValue(Uint8List.fromList([0]));
       registerFallbackValue(
-        FavoriteCoffee(url: '', bytes: Uint8List.fromList([0])),
+        const FavoriteCoffee(url: '', id: '0'),
       );
     });
 
@@ -39,10 +38,10 @@ void main() {
 
       when(() => box.get(any<Uint8List>())).thenReturn(null);
 
-      when(() => box.values).thenReturn(<FavoriteCoffee>[
-        FavoriteCoffee(url: '', bytes: Uint8List.fromList([0])),
-        FavoriteCoffee(url: 'http', bytes: Uint8List.fromList([1])),
-        FavoriteCoffee(url: 'html', bytes: Uint8List.fromList([2])),
+      when(() => box.values).thenReturn(const <FavoriteCoffee>[
+        FavoriteCoffee(url: '', id: '0'),
+        FavoriteCoffee(url: 'http', id: '1'),
+        FavoriteCoffee(url: 'html', id: '2'),
       ]);
 
       when(() => storage.favoriteCoffeeBox)
@@ -54,13 +53,13 @@ void main() {
     test('stores a FavoriteCoffee model on cache', () async {
       await sut.favoriteCoffee(favoriteCoffee);
 
-      verify(() => box.put(favoriteCoffee.url, favoriteCoffee));
+      verify(() => box.put(favoriteCoffee.id, favoriteCoffee));
     });
 
     test('removes a FavoriteCoffee model from cache', () async {
-      await sut.unfavoriteCoffee(favoriteCoffee.url);
+      await sut.unfavoriteCoffee(favoriteCoffee.id);
 
-      verify(() => box.delete(favoriteCoffee.url));
+      verify(() => box.delete(favoriteCoffee.id));
     });
 
     test('returns a FavoriteCoffee model list from cache', () async {
@@ -68,24 +67,24 @@ void main() {
 
       expect(
         coffees,
-        equals(<FavoriteCoffee>[
-          FavoriteCoffee(url: '', bytes: Uint8List.fromList([0])),
-          FavoriteCoffee(url: 'http', bytes: Uint8List.fromList([1])),
-          FavoriteCoffee(url: 'html', bytes: Uint8List.fromList([2])),
+        equals(const <FavoriteCoffee>[
+          FavoriteCoffee(url: '', id: '0'),
+          FavoriteCoffee(url: 'http', id: '1'),
+          FavoriteCoffee(url: 'html', id: '2'),
         ]),
       );
     });
 
     test('returns if a FavoriteCoffee model is stored or not', () async {
       final isFavoriteBeforeCaching =
-          await sut.isCoffeeFavorite(favoriteCoffee.url);
+          await sut.isCoffeeFavorite(favoriteCoffee.id);
 
       expect(isFavoriteBeforeCaching, isFalse);
 
       when(() => box.get(any<Uint8List>())).thenReturn(favoriteCoffee);
 
       final isFavoriteAfterCaching =
-          await sut.isCoffeeFavorite(favoriteCoffee.url);
+          await sut.isCoffeeFavorite(favoriteCoffee.id);
 
       expect(isFavoriteAfterCaching, isTrue);
     });
