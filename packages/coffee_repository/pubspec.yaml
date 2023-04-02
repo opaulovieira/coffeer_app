@@ -1,6 +1,6 @@
 name: coffee_repository
 description: A Very Good Project created by Very Good CLI.
-version: 0.5.0
+version: 0.5.1
 publish_to: none
 
 environment:

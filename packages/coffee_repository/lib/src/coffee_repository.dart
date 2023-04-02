@@ -1,7 +1,6 @@
 import 'package:coffee_api/coffee_api.dart';
 import 'package:coffee_repository/coffee_repository.dart';
 import 'package:key_value_storage/key_value_storage.dart';
-import 'package:uuid/uuid.dart';
 
 /// {@template coffee_repository}
 /// Repository to access coffee data from both CoffeeApi and KeyValueStorage
@@ -46,10 +45,10 @@ class CoffeeRepository {
     }).toList();
   }
 
-  /// Favorites, and caches, the [Coffee] url data on local storage
-  Future<void> favoriteCoffee(String url) {
+  /// Favorites, and caches, the [Coffee] data on local storage
+  Future<void> favoriteCoffee(Coffee coffee) {
     return storage.favoriteCoffee(
-      FavoriteCoffee(id: const Uuid().v4(), url: url),
+      FavoriteCoffee(id: coffee.id, url: coffee.url),
     );
   }
 
