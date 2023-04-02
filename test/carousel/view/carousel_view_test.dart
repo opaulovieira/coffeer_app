@@ -52,4 +52,9 @@ void main() {
   // Due to CachedNetworkImage not being able to test its imageBuilder
   // I will postpone the CarouselItem tests until I find a better solution
   // group('CarouselItem', () {});
+  //
+  // Things that I should test:
+  // 1) Favorite loading with coffee isFavorite data
+  // 2) Calling FavoritesBloc.RequestImages event
+  // 3) Calling CoffeeRepository methods (favorite/unfavorite)
 }

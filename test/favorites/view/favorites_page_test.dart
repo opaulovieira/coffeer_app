@@ -2,7 +2,6 @@ import 'dart:typed_data';
 
 import 'package:bloc_test/bloc_test.dart';
 import 'package:coffee_repository/coffee_repository.dart';
-import 'package:coffeer_app/favorites/bloc/favorites_bloc.dart';
 import 'package:coffeer_app/favorites/favorites.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,7 +16,7 @@ class _MockFavoritesBloc extends MockBloc<FavoritesEvent, FavoritesState>
 void main() {
   group('FavoritesPage', () {
     testWidgets('renders FavoritesView', (tester) async {
-      await tester.pumpApp(const FavoritePage());
+      await tester.pumpApp(const FavoritesPage());
 
       expect(find.byType(FavoritesView), findsOneWidget);
     });
