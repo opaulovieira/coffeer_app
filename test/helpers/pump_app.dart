@@ -13,6 +13,7 @@ CoffeeRepository _buildCoffeeRepositoryMock() {
   when(repository.getRandomCoffeeUrl).thenAnswer((invocation) async => '');
   when(() => repository.isCoffeeFavorite(any()))
       .thenAnswer((invocation) async => false);
+  when(repository.getFavoriteCoffees).thenAnswer((invocation) async => []);
 
   return repository;
 }
