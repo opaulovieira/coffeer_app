@@ -10,11 +10,11 @@ class CarouselView extends StatefulWidget {
   const CarouselView({
     super.key,
     required this.coffeeList,
-    this.onRequestMore,
+    required this.onRequestMore,
   });
 
   final List<Coffee> coffeeList;
-  final VoidCallback? onRequestMore;
+  final VoidCallback onRequestMore;
 
   @override
   State<CarouselView> createState() => _CarouselViewState();
@@ -39,45 +39,19 @@ class _CarouselViewState extends State<CarouselView> {
         radius: const Radius.circular(4),
         controller: scrollController,
         interactive: true,
-        child: ListView.separated(
-          controller: scrollController,
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-          physics: const BouncingScrollPhysics(),
-          separatorBuilder: (context, index) => const SizedBox(height: 24),
-          itemBuilder: (context, index) {
-            final child = CarouselItem(
-              coffee: widget.coffeeList[index],
-              smallestImageSideDimension:
-                  MediaQuery.of(context).size.width * .45,
-            );
-
-            if (index == widget.coffeeList.length - 1) {
-              return Column(
-                children: [
-                  child,
-                  if (widget.onRequestMore != null) ...[
-                    const SizedBox(height: 24),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        widget.onRequestMore?.call();
-                        scrollController.animateTo(
-                          0,
-                          duration: const Duration(milliseconds: 200),
-                          curve: Curves.easeIn,
-                        );
-                      },
-                      label: const Text('I want more!'),
-                      icon: const Icon(Icons.refresh_rounded),
-                    ),
-                    const SizedBox(height: 48),
-                  ],
-                ],
-              );
-            } else {
-              return child;
-            }
+        child: RefreshIndicator(
+          onRefresh: () async {
+            widget.onRequestMore();
           },
-          itemCount: widget.coffeeList.length,
+          child: ListView.builder(
+            controller: scrollController,
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+            physics: const BouncingScrollPhysics(),
+            itemBuilder: (context, index) {
+              return CarouselItem(coffee: widget.coffeeList[index]);
+            },
+            itemCount: widget.coffeeList.length,
+          ),
         ),
       ),
     );
@@ -88,11 +62,9 @@ class CarouselItem extends StatefulWidget {
   const CarouselItem({
     super.key,
     required this.coffee,
-    this.smallestImageSideDimension,
   });
 
   final Coffee coffee;
-  final double? smallestImageSideDimension;
 
   @override
   State<CarouselItem> createState() => _CarouselItemState();
@@ -107,31 +79,32 @@ class _CarouselItemState extends State<CarouselItem>
   Widget build(BuildContext context) {
     super.build(context);
 
-    return CachedNetworkImage(
-      imageUrl: widget.coffee.url,
-      fit: BoxFit.fitWidth,
-      imageBuilder: (context, image) {
-        return _CarouselItemCard(
-          image: image,
-          coffee: widget.coffee,
-        );
-      },
-      progressIndicatorBuilder: (context, url, download) {
-        return _CarouselItemCardShell(
-          child: SizedBox(
-            height: widget.smallestImageSideDimension ??
-                MediaQuery.of(context).size.width * .45,
-            child: Center(
-              child: FittedBox(
-                child: CircularProgressIndicator(
-                  value: download.progress,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: CachedNetworkImage(
+        imageUrl: widget.coffee.url,
+        imageBuilder: (context, image) {
+          return _CarouselItemCard(
+            image: image,
+            coffee: widget.coffee,
+          );
+        },
+        progressIndicatorBuilder: (context, url, download) {
+          return _CarouselItemCardShell(
+            child: SizedBox(
+              height: MediaQuery.of(context).size.width * .45,
+              child: Center(
+                child: FittedBox(
+                  child: CircularProgressIndicator(
+                    value: download.progress,
+                  ),
                 ),
               ),
             ),
-          ),
-        );
-      },
-      errorWidget: (context, url, error) => const SizedBox.shrink(),
+          );
+        },
+        errorWidget: (context, url, error) => const SizedBox.shrink(),
+      ),
     );
   }
 }
@@ -170,25 +143,34 @@ class _CarouselItemCard extends StatelessWidget {
       },
       onDoubleTap: () => _onToggleAction(context),
       child: _CarouselItemCardShell(
-        child: Column(
-          children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(16),
+        child: SizedBox(
+          height: MediaQuery.of(context).size.width * .45,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Flexible(
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(16),
+                  ),
+                  child: Image(
+                    image: image,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
-              child: Image(image: image),
-            ),
-            const Divider(height: 2, thickness: 2, color: Colors.black),
-            const SizedBox(height: 8),
-            Icon(
-              coffee.isFavorite
-                  ? Icons.favorite_rounded
-                  : Icons.favorite_outline_rounded,
-              color: Colors.red,
-              shadows: const [Shadow(color: Colors.white, blurRadius: 8)],
-            ),
-            const SizedBox(height: 8),
-          ],
+              const Divider(height: 2, thickness: 2, color: Colors.black),
+              const SizedBox(height: 8),
+              Icon(
+                coffee.isFavorite
+                    ? Icons.favorite_rounded
+                    : Icons.favorite_outline_rounded,
+                color: Colors.red,
+                shadows: const [Shadow(color: Colors.white, blurRadius: 8)],
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
         ),
       ),
     );
