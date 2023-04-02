@@ -30,19 +30,13 @@ class HomeView extends StatelessWidget {
         body: BlocBuilder<HomeBloc, HomeState>(
           builder: (context, state) {
             if (state is Success) {
-              return Column(
-                children: [
-                  const Spacer(),
-                  CarouselView(
-                    coffeeList: state.coffeeList,
-                    onRequestMore: () {
-                      BlocProvider.of<HomeBloc>(context).add(
-                        const RequestImages(),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 48),
-                ],
+              return CarouselView(
+                coffeeList: state.coffeeList,
+                onRequestMore: () {
+                  BlocProvider.of<HomeBloc>(context).add(
+                    const RequestImages(),
+                  );
+                },
               );
             } else if (state is Error) {
               return Center(

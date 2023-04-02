@@ -31,42 +31,55 @@ class _CarouselViewState extends State<CarouselView> {
 
   @override
   Widget build(BuildContext context) {
-    final smallestImageSideDimension = MediaQuery.of(context).size.width * .45;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4),
+      child: Scrollbar(
+        thickness: 8,
+        thumbVisibility: true,
+        radius: const Radius.circular(4),
+        controller: scrollController,
+        interactive: true,
+        child: ListView.separated(
+          controller: scrollController,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          physics: const BouncingScrollPhysics(),
+          separatorBuilder: (context, index) => const SizedBox(height: 24),
+          itemBuilder: (context, index) {
+            final child = CarouselItem(
+              coffee: widget.coffeeList[index],
+              smallestImageSideDimension:
+                  MediaQuery.of(context).size.width * .45,
+            );
 
-    return Column(
-      children: [
-        SizedBox(
-          height: smallestImageSideDimension,
-          child: ListView.builder(
-            controller: scrollController,
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            itemBuilder: (context, index) {
-              return CarouselItem(
-                coffee: widget.coffeeList[index],
-                smallestImageSideDimension: smallestImageSideDimension,
+            if (index == widget.coffeeList.length - 1) {
+              return Column(
+                children: [
+                  child,
+                  if (widget.onRequestMore != null) ...[
+                    const SizedBox(height: 24),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        widget.onRequestMore?.call();
+                        scrollController.animateTo(
+                          0,
+                          duration: const Duration(milliseconds: 200),
+                          curve: Curves.easeIn,
+                        );
+                      },
+                      label: const Text('I want more!'),
+                      icon: const Icon(Icons.refresh_rounded),
+                    ),
+                    const SizedBox(height: 48),
+                  ],
+                ],
               );
-            },
-            itemCount: widget.coffeeList.length,
-          ),
+            } else {
+              return child;
+            }
+          },
+          itemCount: widget.coffeeList.length,
         ),
-        if (widget.onRequestMore != null) ...[
-          const SizedBox(height: 24),
-          ElevatedButton.icon(
-            onPressed: () {
-              widget.onRequestMore?.call();
-              scrollController.animateTo(
-                0,
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.easeIn,
-              );
-            },
-            label: const Text('I want more!'),
-            icon: const Icon(Icons.refresh_rounded),
-          )
-        ],
-      ],
+      ),
     );
   }
 }
@@ -87,19 +100,6 @@ class CarouselItem extends StatefulWidget {
 
 class _CarouselItemState extends State<CarouselItem>
     with AutomaticKeepAliveClientMixin {
-  void _onToggleAction() {
-    final bloc = BlocProvider.of<home.HomeBloc>(context);
-
-    if (widget.coffee.isFavorite) {
-      bloc.add(home.Unfavorite(id: widget.coffee.id));
-    } else {
-      bloc.add(home.Favorite(coffee: widget.coffee));
-    }
-
-    BlocProvider.of<favorites.FavoritesBloc>(context)
-        .add(const favorites.RequestImages());
-  }
-
   @override
   bool get wantKeepAlive => true;
 
@@ -107,69 +107,118 @@ class _CarouselItemState extends State<CarouselItem>
   Widget build(BuildContext context) {
     super.build(context);
 
-    final smallestImageSideDimension = widget.smallestImageSideDimension ??
-        MediaQuery.of(context).size.width * .45;
-
-    return ConstrainedBox(
-      constraints: BoxConstraints(
-        maxHeight: smallestImageSideDimension,
-        maxWidth: smallestImageSideDimension * 2,
-      ),
-      child: CachedNetworkImage(
-        imageUrl: widget.coffee.url,
-        fit: BoxFit.fitHeight,
-        imageBuilder: (context, image) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: GestureDetector(
-              onTap: () {
-                openToggleFavoriteShowcaseDialog(
-                  context,
-                  coffee: widget.coffee,
-                  onToggleAction: _onToggleAction,
-                );
-              },
-              onDoubleTap: _onToggleAction,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: Image(image: image),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    child: Icon(
-                      widget.coffee.isFavorite
-                          ? Icons.favorite_rounded
-                          : Icons.favorite_outline_rounded,
-                      color: Colors.red,
-                      shadows: const [
-                        Shadow(color: Colors.white, blurRadius: 8)
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-        progressIndicatorBuilder: (context, url, download) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: SizedBox(
-              width: smallestImageSideDimension / 2,
+    return CachedNetworkImage(
+      imageUrl: widget.coffee.url,
+      fit: BoxFit.fitWidth,
+      imageBuilder: (context, image) {
+        return _CarouselItemCard(
+          image: image,
+          coffee: widget.coffee,
+        );
+      },
+      progressIndicatorBuilder: (context, url, download) {
+        return _CarouselItemCardShell(
+          child: SizedBox(
+            height: widget.smallestImageSideDimension ??
+                MediaQuery.of(context).size.width * .45,
+            child: Center(
               child: FittedBox(
-                fit: BoxFit.scaleDown,
                 child: CircularProgressIndicator(
                   value: download.progress,
                 ),
               ),
             ),
-          );
-        },
-        errorWidget: (context, url, error) => const SizedBox.shrink(),
+          ),
+        );
+      },
+      errorWidget: (context, url, error) => const SizedBox.shrink(),
+    );
+  }
+}
+
+class _CarouselItemCard extends StatelessWidget {
+  const _CarouselItemCard({
+    required this.image,
+    required this.coffee,
+  });
+
+  final Coffee coffee;
+  final ImageProvider<Object> image;
+
+  void _onToggleAction(BuildContext context) {
+    final bloc = BlocProvider.of<home.HomeBloc>(context);
+
+    if (coffee.isFavorite) {
+      bloc.add(home.Unfavorite(id: coffee.id));
+    } else {
+      bloc.add(home.Favorite(coffee: coffee));
+    }
+
+    BlocProvider.of<favorites.FavoritesBloc>(context)
+        .add(const favorites.RequestImages());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        openToggleFavoriteShowcaseDialog(
+          context,
+          coffee: coffee,
+          onToggleAction: () => _onToggleAction(context),
+        );
+      },
+      onDoubleTap: () => _onToggleAction(context),
+      child: _CarouselItemCardShell(
+        child: Column(
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16),
+              ),
+              child: Image(image: image),
+            ),
+            const Divider(height: 2, thickness: 2, color: Colors.black),
+            const SizedBox(height: 8),
+            Icon(
+              coffee.isFavorite
+                  ? Icons.favorite_rounded
+                  : Icons.favorite_outline_rounded,
+              color: Colors.red,
+              shadows: const [Shadow(color: Colors.white, blurRadius: 8)],
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
       ),
+    );
+  }
+}
+
+class _CarouselItemCardShell extends StatelessWidget {
+  const _CarouselItemCardShell({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.grey,
+            blurRadius: 12,
+            spreadRadius: 2,
+            blurStyle: BlurStyle.outer,
+          )
+        ],
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          width: 2,
+          strokeAlign: BorderSide.strokeAlignOutside,
+        ),
+      ),
+      child: child,
     );
   }
 }
