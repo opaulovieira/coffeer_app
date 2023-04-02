@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:coffee_repository/coffee_repository.dart';
 import 'package:coffeer_app/favorites/bloc/favorites_bloc.dart';
 import 'package:coffeer_app/home/bloc/bloc.dart' as home;
+import 'package:coffeer_app/showcase/showcase.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -116,6 +117,12 @@ class _FavoritesItem extends StatelessWidget {
 
   final Coffee coffee;
 
+  void _onUnfavorite(BuildContext context) {
+    BlocProvider.of<FavoritesBloc>(context).add(
+      RequestUnfavorite(id: coffee.id),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final smallestImageSideDimension = MediaQuery.of(context).size.width * .45;
@@ -127,11 +134,14 @@ class _FavoritesItem extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
           child: GestureDetector(
-            onDoubleTap: () {
-              BlocProvider.of<FavoritesBloc>(context).add(
-                RequestUnfavorite(id: coffee.id),
+            onTap: () {
+              openUnfavoriteCoffeeShowcaseDialog(
+                context,
+                coffee: coffee,
+                onUnfavorite: () => _onUnfavorite(context),
               );
             },
+            onDoubleTap: () => _onUnfavorite(context),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16),
               child: Image(image: image),
