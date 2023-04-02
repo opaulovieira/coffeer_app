@@ -1,23 +1,32 @@
+import 'dart:io';
+
 import 'package:coffee_api/src/models/models.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
+/// {@template unsuccessful_request_exception}
 /// Exception which may occur in case of fetched data returns null or '
 /// the status code being different from 200.
-class UnsuccessfulRequestException implements Exception {}
+/// {@endtemplate}
+class UnsuccessfulRequestException implements Exception {
+  /// {@macro unsuccessful_request_exception}
+  const UnsuccessfulRequestException();
+}
 
 /// {@template failed_request_exception}
 /// Exception which may occur in case of fetched data throws an error
 /// {@endtemplate}
 class FailedRequestException implements Exception {
   /// {@macro failed_request_exception}
-  const FailedRequestException(this.error, this.stackTrace);
+  const FailedRequestException();
+}
 
-  /// The error that was caught.
-  final Object error;
-
-  /// The Stacktrace associated with the [error].
-  final StackTrace stackTrace;
+/// {@template no_internet_request_exception}
+/// Exception which may occur in case of no internet connection
+/// {@endtemplate}
+class NoInternetRequestException implements Exception {
+  /// {@macro no_internet_request_exception}
+  const NoInternetRequestException();
 }
 
 /// {@template coffee_api}
@@ -64,12 +73,16 @@ class CoffeeApi extends CoffeeApiContract {
       if (data != null && response.statusCode == 200) {
         return CoffeeUrl.fromJson(data);
       } else {
-        throw UnsuccessfulRequestException();
+        throw const UnsuccessfulRequestException();
       }
     } on UnsuccessfulRequestException {
       rethrow;
-    } catch (error, stackTrace) {
-      throw FailedRequestException(error, stackTrace);
+    } catch (error) {
+      if (error is DioError && error.error is SocketException) {
+        throw const NoInternetRequestException();
+      }
+
+      throw const FailedRequestException();
     }
   }
 
@@ -88,12 +101,12 @@ class CoffeeApi extends CoffeeApiContract {
       if (data != null && response.statusCode == 200) {
         return Uint8List.fromList(data);
       } else {
-        throw UnsuccessfulRequestException();
+        throw const UnsuccessfulRequestException();
       }
     } on UnsuccessfulRequestException {
       rethrow;
-    } catch (error, stackTrace) {
-      throw FailedRequestException(error, stackTrace);
+    } catch (error) {
+      throw const FailedRequestException();
     }
   }
 }
