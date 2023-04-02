@@ -131,7 +131,7 @@ class _FavoritesItem extends StatelessWidget {
     final smallestImageSideDimension = MediaQuery.of(context).size.width * .45;
 
     return CachedNetworkImage(
-      imageUrl: 'coffee.url',
+      imageUrl: coffee.url,
       fit: BoxFit.fitHeight,
       imageBuilder: (context, image) {
         return Padding(
