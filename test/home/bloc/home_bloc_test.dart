@@ -162,21 +162,12 @@ void main() {
         ' getRandomCoffeeUrl throws a FailedRequestException',
         setUp: () {
           when(() => coffeeRepository.getRandomCoffeeUrl()).thenThrow(
-            FailedRequestException(
-              StateError('FailedRequestException error'),
-              StackTrace.empty,
-            ),
+            const FailedRequestException(),
           );
         },
         build: () => HomeBloc(coffeeRepository: coffeeRepository),
         act: (bloc) => bloc.add(const RequestImages()),
-        expect: () => [
-          isA<Error>().having(
-            (error) => error.error,
-            'FailedRequestException error data',
-            isA<StateError>(),
-          )
-        ],
+        expect: () => [const Error(detail: ErrorDetail.internet)],
       );
     });
 

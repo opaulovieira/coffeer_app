@@ -127,10 +127,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         Success(coffeeList: coffeeList),
       );
     } catch (error) {
-      if (error is FailedRequestException) {
-        emit(Error(error: error.error));
+      if (error is UnsuccessfulRequestException) {
+        emit(const Error(detail: ErrorDetail.data));
+      } else if (error is NoInternetRequestException) {
+        emit(const Error(detail: ErrorDetail.internet));
       } else {
-        emit(Error(error: error));
+        emit(const Error(detail: ErrorDetail.unexpected));
       }
     }
   }

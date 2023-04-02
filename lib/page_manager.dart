@@ -1,4 +1,5 @@
 import 'package:coffee_repository/coffee_repository.dart';
+import 'package:coffeer_app/connection_checker/connection_checker.dart';
 import 'package:coffeer_app/favorites/favorites.dart' as favorites;
 import 'package:coffeer_app/home/home.dart' as home;
 import 'package:flutter/material.dart';
@@ -11,8 +12,11 @@ class PageManager extends StatefulWidget {
   State<PageManager> createState() => _PageManagerState();
 }
 
-class _PageManagerState extends State<PageManager> {
+class _PageManagerState extends State<PageManager> with ConnectionChecker {
   var _pageIndex = 0;
+
+  @override
+  bool get enableMaterialBanner => true;
 
   @override
   Widget build(BuildContext context) {
