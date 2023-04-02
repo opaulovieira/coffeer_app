@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:coffee_repository/coffee_repository.dart';
 import 'package:coffeer_app/favorites/bloc/favorites_bloc.dart';
+import 'package:coffeer_app/home/bloc/bloc.dart' as home;
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,6 +29,10 @@ class FavoritesView extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         body: BlocConsumer<FavoritesBloc, FavoritesState>(
+          listenWhen: (previousState, actualState) {
+            return previousState is Idle &&
+                (actualState is Idle || actualState is Empty);
+          },
           listener: (context, state) {
             if (state is Idle && state.action != null) {
               final action = state.action;
@@ -37,26 +42,33 @@ class FavoritesView extends StatelessWidget {
                   context: context,
                   builder: (context) {
                     return AlertDialog(
-                      title: Text('Favorites'),
-                      content: Text(
-                          'Are you sure you want to unfavorite this image?'),
+                      title: const Text('Favorites'),
+                      content: const Text(
+                        'Are you sure you want to unfavorite this image?',
+                      ),
                       actions: [
                         TextButton(
-                            onPressed: () => Navigator.of(context).pop(false),
-                            child: Text('Cancel')),
+                          onPressed: () => Navigator.of(context).pop(false),
+                          child: const Text('Cancel'),
+                        ),
                         TextButton(
-                            onPressed: () => Navigator.of(context).pop(true),
-                            child: Text('Confirm')),
+                          onPressed: () => Navigator.of(context).pop(true),
+                          child: const Text('Confirm'),
+                        ),
                       ],
                     );
                   },
                 ).then((shouldUnfavorite) {
                   if (shouldUnfavorite != null && shouldUnfavorite) {
                     BlocProvider.of<FavoritesBloc>(context)
-                        .add(Unfavorite(key: action.key));
+                        .add(Unfavorite(id: action.key));
                   }
                 });
               }
+            } else if (state is Idle && state.action == null ||
+                state is Empty) {
+              BlocProvider.of<home.HomeBloc>(context)
+                  .add(const home.UpdateFavoriteState());
             }
           },
           builder: (context, state) {
@@ -67,11 +79,11 @@ class FavoritesView extends StatelessWidget {
                 (row) {
                   return TableRow(
                     children: [
-                      _FavoritesItem(url: row[0].url),
+                      _FavoritesItem(coffee: row[0]),
                       if (row.length.isOdd)
                         const SizedBox.shrink()
                       else
-                        _FavoritesItem(url: row[1].url),
+                        _FavoritesItem(coffee: row[1]),
                     ],
                   );
                 },
@@ -100,16 +112,16 @@ class FavoritesView extends StatelessWidget {
 }
 
 class _FavoritesItem extends StatelessWidget {
-  const _FavoritesItem({required this.url});
+  const _FavoritesItem({required this.coffee});
 
-  final String url;
+  final Coffee coffee;
 
   @override
   Widget build(BuildContext context) {
     final smallestImageSideDimension = MediaQuery.of(context).size.width * .45;
 
     return CachedNetworkImage(
-      imageUrl: url,
+      imageUrl: coffee.url,
       fit: BoxFit.fitHeight,
       imageBuilder: (context, image) {
         return Padding(
@@ -117,7 +129,7 @@ class _FavoritesItem extends StatelessWidget {
           child: GestureDetector(
             onDoubleTap: () {
               BlocProvider.of<FavoritesBloc>(context).add(
-                RequestUnfavorite(key: url),
+                RequestUnfavorite(id: coffee.id),
               );
             },
             child: ClipRRect(

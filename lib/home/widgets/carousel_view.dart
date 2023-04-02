@@ -1,22 +1,18 @@
-import 'dart:async';
-import 'dart:ui';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:coffee_repository/coffee_repository.dart';
-import 'package:coffeer_app/carousel/cubit/carousel_cubit.dart';
-import 'package:coffeer_app/favorites/bloc/bloc.dart';
-import 'package:flutter/foundation.dart';
+import 'package:coffeer_app/favorites/bloc/bloc.dart' as favorites;
+import 'package:coffeer_app/home/bloc/bloc.dart' as home;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CarouselView extends StatefulWidget {
   const CarouselView({
     super.key,
-    required this.urlList,
+    required this.coffeeList,
     this.onRequestMore,
   });
 
-  final List<String> urlList;
+  final List<Coffee> coffeeList;
   final VoidCallback? onRequestMore;
 
   @override
@@ -46,21 +42,12 @@ class _CarouselViewState extends State<CarouselView> {
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
             itemBuilder: (context, index) {
-              return BlocProvider<CarouselCubit>(
-                create: (context) {
-                  return CarouselCubit(
-                    url: widget.urlList[index],
-                    coffeeRepository:
-                        RepositoryProvider.of<CoffeeRepository>(context),
-                  );
-                },
-                child: CarouselItem(
-                  url: widget.urlList[index],
-                  smallestImageSideDimension: smallestImageSideDimension,
-                ),
+              return CarouselItem(
+                coffee: widget.coffeeList[index],
+                smallestImageSideDimension: smallestImageSideDimension,
               );
             },
-            itemCount: widget.urlList.length,
+            itemCount: widget.coffeeList.length,
           ),
         ),
         if (widget.onRequestMore != null) ...[
@@ -86,11 +73,11 @@ class _CarouselViewState extends State<CarouselView> {
 class CarouselItem extends StatefulWidget {
   const CarouselItem({
     super.key,
-    required this.url,
+    required this.coffee,
     this.smallestImageSideDimension,
   });
 
-  final String url;
+  final Coffee coffee;
   final double? smallestImageSideDimension;
 
   @override
@@ -99,8 +86,6 @@ class CarouselItem extends StatefulWidget {
 
 class _CarouselItemState extends State<CarouselItem>
     with AutomaticKeepAliveClientMixin {
-  final bytesCompleter = Completer<Uint8List?>();
-
   @override
   bool get wantKeepAlive => true;
 
@@ -117,53 +102,45 @@ class _CarouselItemState extends State<CarouselItem>
         maxWidth: smallestImageSideDimension * 2,
       ),
       child: CachedNetworkImage(
-        imageUrl: widget.url,
+        imageUrl: widget.coffee.url,
         fit: BoxFit.fitHeight,
         imageBuilder: (context, image) {
-          if (!bytesCompleter.isCompleted) {
-            bytesCompleter.complete(image.getBytes(context));
-          }
-
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: BlocBuilder<CarouselCubit, bool>(
-              builder: (context, isFavorite) {
-                return GestureDetector(
-                  onDoubleTap: () {
-                    final cubit = BlocProvider.of<CarouselCubit>(context);
+            child: GestureDetector(
+              onDoubleTap: () {
+                final bloc = BlocProvider.of<home.HomeBloc>(context);
 
-                    if (isFavorite) {
-                      cubit.unfavorite();
-                    } else {
-                      cubit.favorite(bytesCompleter.future);
-                    }
+                if (widget.coffee.isFavorite) {
+                  bloc.add(home.Unfavorite(id: widget.coffee.id));
+                } else {
+                  bloc.add(home.Favorite(coffee: widget.coffee));
+                }
 
-                    BlocProvider.of<FavoritesBloc>(context)
-                        .add(const RequestImages());
-                  },
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: Image(image: image),
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        child: Icon(
-                          isFavorite
-                              ? Icons.favorite_rounded
-                              : Icons.favorite_outline_rounded,
-                          color: Colors.red,
-                          shadows: const [
-                            Shadow(color: Colors.white, blurRadius: 8)
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                );
+                BlocProvider.of<favorites.FavoritesBloc>(context)
+                    .add(const favorites.RequestImages());
               },
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: Image(image: image),
+                  ),
+                  Positioned(
+                    bottom: 0,
+                    child: Icon(
+                      widget.coffee.isFavorite
+                          ? Icons.favorite_rounded
+                          : Icons.favorite_outline_rounded,
+                      color: Colors.red,
+                      shadows: const [
+                        Shadow(color: Colors.white, blurRadius: 8)
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           );
         },
@@ -184,33 +161,5 @@ class _CarouselItemState extends State<CarouselItem>
         errorWidget: (context, url, error) => const SizedBox.shrink(),
       ),
     );
-  }
-}
-
-extension _ImageTool on ImageProvider {
-  Future<Uint8List?> getBytes(
-    BuildContext context, {
-    ImageByteFormat format = ImageByteFormat.rawRgba,
-  }) async {
-    final completer = Completer<Uint8List?>();
-
-    final imageStream = resolve(createLocalImageConfiguration(context));
-    final listener = ImageStreamListener(
-      (imageInfo, synchronousCall) async {
-        final bytes = await imageInfo.image.toByteData(format: format);
-
-        if (!completer.isCompleted) {
-          completer.complete(bytes?.buffer.asUint8List());
-        }
-      },
-    );
-
-    imageStream.addListener(listener);
-
-    final imageBytes = await completer.future;
-
-    imageStream.removeListener(listener);
-
-    return imageBytes;
   }
 }

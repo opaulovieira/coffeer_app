@@ -1,7 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:coffeer_app/carousel/carousel.dart';
-import 'package:coffeer_app/home/bloc/home_bloc.dart';
+import 'package:coffee_repository/coffee_repository.dart';
 import 'package:coffeer_app/home/home.dart';
+import 'package:coffeer_app/home/widgets/carousel_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -41,7 +41,7 @@ void main() {
     });
 
     testWidgets('renders success state', (tester) async {
-      const state = Success(coffeeUrlList: ['']);
+      const state = Success(coffeeList: [Coffee(id: 'id', url: 'url')]);
 
       when(() => bloc.state).thenReturn(state);
 
@@ -86,7 +86,7 @@ void main() {
 
     testWidgets('emits RequestImages event when tapping on request more button',
         (tester) async {
-      const state = Success(coffeeUrlList: ['']);
+      const state = Success(coffeeList: [Coffee(id: 'id', url: 'url')]);
 
       when(() => bloc.state).thenReturn(state);
 
