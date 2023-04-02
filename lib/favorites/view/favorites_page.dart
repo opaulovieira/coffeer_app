@@ -3,7 +3,6 @@ import 'package:coffee_repository/coffee_repository.dart';
 import 'package:coffeer_app/favorites/bloc/favorites_bloc.dart';
 import 'package:coffeer_app/home/bloc/bloc.dart' as home;
 import 'package:coffeer_app/showcase/showcase.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -22,8 +21,21 @@ class FavoritesPage extends StatelessWidget {
   }
 }
 
-class FavoritesView extends StatelessWidget {
+class FavoritesView extends StatefulWidget {
   const FavoritesView({super.key});
+
+  @override
+  State<FavoritesView> createState() => _FavoritesViewState();
+}
+
+class _FavoritesViewState extends State<FavoritesView> {
+  final scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,24 +91,28 @@ class FavoritesView extends StatelessWidget {
             if (state is Idle) {
               final coffeeList = state.coffeeList;
 
-              final tableRows = coffeeList.slices(2).map(
-                (row) {
-                  return TableRow(
-                    children: [
-                      _FavoritesItem(coffee: row[0]),
-                      if (row.length.isOdd)
-                        const SizedBox.shrink()
-                      else
-                        _FavoritesItem(coffee: row[1]),
-                    ],
-                  );
-                },
-              );
-
-              return SingleChildScrollView(
+              return Padding(
                 padding: const EdgeInsets.all(4),
-                child: Table(
-                  children: tableRows.toList(),
+                child: Scrollbar(
+                  thickness: 8,
+                  thumbVisibility: true,
+                  radius: const Radius.circular(4),
+                  controller: scrollController,
+                  interactive: true,
+                  child: GridView.count(
+                    controller: scrollController,
+                    physics: const BouncingScrollPhysics(),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 32,
+                      vertical: 16,
+                    ),
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                    children: coffeeList
+                        .map((coffee) => _FavoritesItem(coffee: coffee))
+                        .toList(),
+                  ),
                 ),
               );
             } else if (state is Loading) {
@@ -132,24 +148,18 @@ class _FavoritesItem extends StatelessWidget {
 
     return CachedNetworkImage(
       imageUrl: coffee.url,
-      fit: BoxFit.fitHeight,
+      fit: BoxFit.cover,
       imageBuilder: (context, image) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-          child: GestureDetector(
-            onTap: () {
-              openUnfavoriteShowcaseDialog(
-                context,
-                coffee: coffee,
-                onUnfavorite: () => _onUnfavorite(context),
-              );
-            },
-            onDoubleTap: () => _onUnfavorite(context),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: Image(image: image),
-            ),
-          ),
+        return GestureDetector(
+          onTap: () {
+            openUnfavoriteShowcaseDialog(
+              context,
+              coffee: coffee,
+              onUnfavorite: () => _onUnfavorite(context),
+            );
+          },
+          onDoubleTap: () => _onUnfavorite(context),
+          child: _FavoritesItemCardShell(image: image),
         );
       },
       progressIndicatorBuilder: (context, url, download) {
@@ -181,6 +191,35 @@ class _FavoritesItem extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _FavoritesItemCardShell extends StatelessWidget {
+  const _FavoritesItemCardShell({required this.image});
+
+  final ImageProvider<Object> image;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        image: DecorationImage(image: image, fit: BoxFit.cover),
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.grey,
+            blurRadius: 12,
+            spreadRadius: 2,
+            blurStyle: BlurStyle.outer,
+          )
+        ],
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          width: 2,
+          strokeAlign: BorderSide.strokeAlignOutside,
+        ),
+      ),
+      // child: child,
     );
   }
 }

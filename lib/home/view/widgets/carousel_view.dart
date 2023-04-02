@@ -41,7 +41,7 @@ class _CarouselViewState extends State<CarouselView> {
         interactive: true,
         child: ListView.separated(
           controller: scrollController,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
           physics: const BouncingScrollPhysics(),
           separatorBuilder: (context, index) => const SizedBox(height: 24),
           itemBuilder: (context, index) {
