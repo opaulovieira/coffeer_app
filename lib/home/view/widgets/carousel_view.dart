@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:coffee_repository/coffee_repository.dart';
 import 'package:coffeer_app/favorites/bloc/bloc.dart' as favorites;
 import 'package:coffeer_app/home/bloc/bloc.dart' as home;
+import 'package:coffeer_app/showcase/showcase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -86,6 +87,19 @@ class CarouselItem extends StatefulWidget {
 
 class _CarouselItemState extends State<CarouselItem>
     with AutomaticKeepAliveClientMixin {
+  void _onToggleAction() {
+    final bloc = BlocProvider.of<home.HomeBloc>(context);
+
+    if (widget.coffee.isFavorite) {
+      bloc.add(home.Unfavorite(id: widget.coffee.id));
+    } else {
+      bloc.add(home.Favorite(coffee: widget.coffee));
+    }
+
+    BlocProvider.of<favorites.FavoritesBloc>(context)
+        .add(const favorites.RequestImages());
+  }
+
   @override
   bool get wantKeepAlive => true;
 
@@ -108,18 +122,14 @@ class _CarouselItemState extends State<CarouselItem>
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: GestureDetector(
-              onDoubleTap: () {
-                final bloc = BlocProvider.of<home.HomeBloc>(context);
-
-                if (widget.coffee.isFavorite) {
-                  bloc.add(home.Unfavorite(id: widget.coffee.id));
-                } else {
-                  bloc.add(home.Favorite(coffee: widget.coffee));
-                }
-
-                BlocProvider.of<favorites.FavoritesBloc>(context)
-                    .add(const favorites.RequestImages());
+              onTap: () {
+                openToggleFavoriteShowcaseDialog(
+                  context,
+                  coffee: widget.coffee,
+                  onToggleAction: _onToggleAction,
+                );
               },
+              onDoubleTap: _onToggleAction,
               child: Stack(
                 alignment: Alignment.center,
                 children: [

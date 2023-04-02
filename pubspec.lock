@@ -110,7 +110,7 @@ packages:
       path: "packages/coffee_repository"
       relative: true
     source: path
-    version: "0.5.1"
+    version: "0.5.2"
   collection:
     dependency: "direct main"
     description:

@@ -1,6 +1,6 @@
 import 'package:coffee_repository/coffee_repository.dart';
 import 'package:coffeer_app/home/bloc/home_bloc.dart';
-import 'package:coffeer_app/home/widgets/carousel_view.dart';
+import 'package:coffeer_app/home/view/widgets/carousel_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

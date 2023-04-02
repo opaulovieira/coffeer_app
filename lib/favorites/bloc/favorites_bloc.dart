@@ -11,11 +11,32 @@ class FavoritesBloc extends Bloc<FavoritesEvent, FavoritesState> {
       : _coffeeRepository = coffeeRepository,
         super(const Loading()) {
     on<RequestUnfavorite>(_onRequestUnfavorite());
+    on<CancelUnfavorite>(_onCancelUnfavorite());
     on<RequestImages>(_onRequestImages());
     on<Unfavorite>(_onUnfavorite());
   }
 
   final CoffeeRepository _coffeeRepository;
+
+  EventHandler<RequestUnfavorite, FavoritesState> _onRequestUnfavorite() {
+    return (event, emit) {
+      final state = this.state;
+      if (state is Idle) {
+        emit(
+          state.copyWith(action: RequestUnfavoriteConfirmation(key: event.id)),
+        );
+      }
+    };
+  }
+
+  EventHandler<CancelUnfavorite, FavoritesState> _onCancelUnfavorite() {
+    return (event, emit) {
+      final state = this.state;
+      if (state is Idle) {
+        emit(Idle(coffeeList: state.coffeeList));
+      }
+    };
+  }
 
   EventHandler<RequestImages, FavoritesState> _onRequestImages() {
     return (event, emit) async {
@@ -25,17 +46,6 @@ class FavoritesBloc extends Bloc<FavoritesEvent, FavoritesState> {
         emit(const Empty());
       } else {
         emit(Idle(coffeeList: coffees));
-      }
-    };
-  }
-
-  EventHandler<RequestUnfavorite, FavoritesState> _onRequestUnfavorite() {
-    return (event, emit) {
-      final state = this.state;
-      if (state is Idle) {
-        emit(
-          state.copyWith(action: RequestUnfavoriteConfirmation(key: event.id)),
-        );
       }
     };
   }
