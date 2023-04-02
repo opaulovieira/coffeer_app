@@ -53,7 +53,7 @@ void main() {
     });
 
     testWidgets('renders error state', (tester) async {
-      final state = Error(error: Exception());
+      const state = Error(detail: ErrorDetail.unexpected);
 
       when(() => bloc.state).thenReturn(state);
 
@@ -69,7 +69,7 @@ void main() {
 
     testWidgets('emits TryAgain event when tapping on try again button',
         (tester) async {
-      final state = Error(error: Exception());
+      const state = Error(detail: ErrorDetail.internet);
 
       when(() => bloc.state).thenReturn(state);
 

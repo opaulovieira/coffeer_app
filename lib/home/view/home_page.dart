@@ -44,18 +44,15 @@ class HomeView extends StatelessWidget {
                   const SizedBox(height: 48),
                 ],
               );
-            } else if (state is Loading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else {
+            } else if (state is Error) {
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      'Ops, sorry... \nSomething went wrong!',
-                      style: TextStyle(fontSize: 24),
+                    Text(
+                      state.detail.message,
+                      style: const TextStyle(fontSize: 24),
+                      textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton(
@@ -68,6 +65,10 @@ class HomeView extends StatelessWidget {
                     ),
                   ],
                 ),
+              );
+            } else {
+              return const Center(
+                child: CircularProgressIndicator(),
               );
             }
           },

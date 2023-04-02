@@ -29,19 +29,32 @@ class Success extends Equatable implements HomeState {
   }
 }
 
-class Error extends Equatable implements HomeState {
-  const Error({required this.error});
+enum ErrorDetail {
+  unexpected('Ops, sorry... \nSomething went wrong!'),
+  data(
+    'Hey, it is not me, it is y-... Ok, the error is on me. '
+    'There is no available data',
+  ),
+  internet('Well... It seems the internet connection is not working.');
 
-  final Object? error;
+  const ErrorDetail(this.message);
+
+  final String message;
+}
+
+class Error extends Equatable implements HomeState {
+  const Error({required this.detail});
+
+  final ErrorDetail detail;
 
   @override
-  List<Object?> get props => [error];
+  List<Object?> get props => [detail];
 
   @override
   bool? get stringify => false;
 
   @override
   String toString() {
-    return 'Error(error: $error)';
+    return 'Error(error: $detail)';
   }
 }
