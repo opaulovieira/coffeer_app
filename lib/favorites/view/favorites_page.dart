@@ -131,7 +131,7 @@ class _FavoritesItem extends StatelessWidget {
     final smallestImageSideDimension = MediaQuery.of(context).size.width * .45;
 
     return CachedNetworkImage(
-      imageUrl: coffee.url,
+      imageUrl: 'coffee.url',
       fit: BoxFit.fitHeight,
       imageBuilder: (context, image) {
         return Padding(
@@ -166,7 +166,21 @@ class _FavoritesItem extends StatelessWidget {
           ),
         );
       },
-      errorWidget: (context, url, error) => const SizedBox.shrink(),
+      errorWidget: (context, url, error) {
+        return Padding(
+          padding: const EdgeInsets.all(8),
+          child: SizedBox(
+            width: smallestImageSideDimension / 2,
+            height: smallestImageSideDimension / 2,
+            child: const Center(
+              child: Text(
+                'Sorry :/\nSomething went wrong while loading your image!',
+                style: TextStyle(fontSize: 10),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }
