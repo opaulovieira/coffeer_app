@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:coffee_repository/coffee_repository.dart';
 import 'package:flutter/material.dart';
 
-Future<void> openToggleFavoriteCoffeeShowcaseDialog(
+Future<void> openToggleFavoriteShowcaseDialog(
   BuildContext context, {
   required Coffee coffee,
   required VoidCallback onToggleAction,
@@ -10,7 +10,7 @@ Future<void> openToggleFavoriteCoffeeShowcaseDialog(
   return showDialog<void>(
     context: context,
     builder: (context) {
-      return CoffeeShowcaseDialog.favorite(
+      return ShowcaseDialog.favorite(
         coffee: coffee,
         onToggleAction: onToggleAction,
       );
@@ -18,7 +18,7 @@ Future<void> openToggleFavoriteCoffeeShowcaseDialog(
   );
 }
 
-Future<void> openUnfavoriteCoffeeShowcaseDialog(
+Future<void> openUnfavoriteShowcaseDialog(
   BuildContext context, {
   required Coffee coffee,
   required VoidCallback onUnfavorite,
@@ -26,7 +26,7 @@ Future<void> openUnfavoriteCoffeeShowcaseDialog(
   return showDialog<void>(
     context: context,
     builder: (context) {
-      return CoffeeShowcaseDialog.unfavorite(
+      return ShowcaseDialog.unfavorite(
         coffee: coffee,
         onUnfavorite: onUnfavorite,
       );
@@ -34,17 +34,17 @@ Future<void> openUnfavoriteCoffeeShowcaseDialog(
   );
 }
 
-class CoffeeShowcaseDialog extends StatelessWidget {
-  const CoffeeShowcaseDialog._({
+class ShowcaseDialog extends StatelessWidget {
+  const ShowcaseDialog._({
     required this.coffee,
     required this.iconBuilder,
   });
 
-  factory CoffeeShowcaseDialog.favorite({
+  factory ShowcaseDialog.favorite({
     required Coffee coffee,
     required VoidCallback onToggleAction,
   }) {
-    return CoffeeShowcaseDialog._(
+    return ShowcaseDialog._(
       coffee: coffee,
       iconBuilder: (context) => _FavoriteIconButton(
         initialValue: coffee.isFavorite,
@@ -53,11 +53,11 @@ class CoffeeShowcaseDialog extends StatelessWidget {
     );
   }
 
-  factory CoffeeShowcaseDialog.unfavorite({
+  factory ShowcaseDialog.unfavorite({
     required Coffee coffee,
     required VoidCallback onUnfavorite,
   }) {
-    return CoffeeShowcaseDialog._(
+    return ShowcaseDialog._(
       coffee: coffee,
       iconBuilder: (context) => IconButton(
         onPressed: () {

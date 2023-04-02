@@ -123,7 +123,7 @@ class _CarouselItemState extends State<CarouselItem>
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: GestureDetector(
               onTap: () {
-                openToggleFavoriteCoffeeShowcaseDialog(
+                openToggleFavoriteShowcaseDialog(
                   context,
                   coffee: widget.coffee,
                   onToggleAction: _onToggleAction,

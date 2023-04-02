@@ -138,7 +138,7 @@ class _FavoritesItem extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
           child: GestureDetector(
             onTap: () {
-              openUnfavoriteCoffeeShowcaseDialog(
+              openUnfavoriteShowcaseDialog(
                 context,
                 coffee: coffee,
                 onUnfavorite: () => _onUnfavorite(context),
