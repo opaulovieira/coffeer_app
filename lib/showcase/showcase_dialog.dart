@@ -10,7 +10,7 @@ Future<void> openToggleFavoriteCoffeeShowcaseDialog(
   return showDialog<void>(
     context: context,
     builder: (context) {
-      return _CoffeeShowcaseDialog.favorite(
+      return CoffeeShowcaseDialog.favorite(
         coffee: coffee,
         onToggleAction: onToggleAction,
       );
@@ -26,7 +26,7 @@ Future<void> openUnfavoriteCoffeeShowcaseDialog(
   return showDialog<void>(
     context: context,
     builder: (context) {
-      return _CoffeeShowcaseDialog.unfavorite(
+      return CoffeeShowcaseDialog.unfavorite(
         coffee: coffee,
         onUnfavorite: onUnfavorite,
       );
@@ -34,17 +34,17 @@ Future<void> openUnfavoriteCoffeeShowcaseDialog(
   );
 }
 
-class _CoffeeShowcaseDialog extends StatefulWidget {
-  const _CoffeeShowcaseDialog._({
+class CoffeeShowcaseDialog extends StatelessWidget {
+  const CoffeeShowcaseDialog._({
     required this.coffee,
     required this.iconBuilder,
   });
 
-  factory _CoffeeShowcaseDialog.favorite({
+  factory CoffeeShowcaseDialog.favorite({
     required Coffee coffee,
     required VoidCallback onToggleAction,
   }) {
-    return _CoffeeShowcaseDialog._(
+    return CoffeeShowcaseDialog._(
       coffee: coffee,
       iconBuilder: (context) => _FavoriteIconButton(
         initialValue: coffee.isFavorite,
@@ -53,11 +53,11 @@ class _CoffeeShowcaseDialog extends StatefulWidget {
     );
   }
 
-  factory _CoffeeShowcaseDialog.unfavorite({
+  factory CoffeeShowcaseDialog.unfavorite({
     required Coffee coffee,
     required VoidCallback onUnfavorite,
   }) {
-    return _CoffeeShowcaseDialog._(
+    return CoffeeShowcaseDialog._(
       coffee: coffee,
       iconBuilder: (context) => IconButton(
         onPressed: () {
@@ -73,11 +73,6 @@ class _CoffeeShowcaseDialog extends StatefulWidget {
   final Coffee coffee;
   final WidgetBuilder iconBuilder;
 
-  @override
-  State<_CoffeeShowcaseDialog> createState() => _CoffeeShowcaseDialogState();
-}
-
-class _CoffeeShowcaseDialogState extends State<_CoffeeShowcaseDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -96,12 +91,12 @@ class _CoffeeShowcaseDialogState extends State<_CoffeeShowcaseDialog> {
             ),
             Flexible(
               child: CachedNetworkImage(
-                imageUrl: widget.coffee.url,
+                imageUrl: coffee.url,
               ),
             ),
             Align(
               alignment: Alignment.bottomLeft,
-              child: widget.iconBuilder(context),
+              child: iconBuilder(context),
             )
           ],
         ),
