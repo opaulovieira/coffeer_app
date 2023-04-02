@@ -5,6 +5,8 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 
 mixin ConnectionChecker<T extends StatefulWidget> on State<T> {
+  bool get enableMaterialBanner;
+
   static final _connectivity = Connectivity();
 
   late final StreamSubscription<ConnectivityResult>
@@ -39,31 +41,36 @@ mixin ConnectionChecker<T extends StatefulWidget> on State<T> {
   void initState() {
     super.initState();
 
-    _connectivity.checkConnectivity().then((value) async {
-      final hasConnection = await _hasInternetConnection();
+    if (enableMaterialBanner) {
+      _connectivity.checkConnectivity().then((value) async {
+        final hasConnection = await _hasInternetConnection();
 
-      if (mounted && !hasConnection) {
-        _openMaterialBanner(context);
-      }
-    });
-
-    _connectivityResultStreamSubscription =
-        _connectivity.onConnectivityChanged.listen((event) async {
-      final hasConnection = await _hasInternetConnection();
-
-      if (mounted) {
-        if (hasConnection) {
-          ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
-        } else {
+        if (mounted && !hasConnection) {
           _openMaterialBanner(context);
         }
-      }
-    });
+      });
+
+      _connectivityResultStreamSubscription =
+          _connectivity.onConnectivityChanged.listen((event) async {
+        final hasConnection = await _hasInternetConnection();
+
+        if (mounted) {
+          if (hasConnection) {
+            ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
+          } else {
+            _openMaterialBanner(context);
+          }
+        }
+      });
+    }
   }
 
   @override
   void dispose() {
-    _connectivityResultStreamSubscription.cancel();
+    if (enableMaterialBanner) {
+      _connectivityResultStreamSubscription.cancel();
+    }
+
     super.dispose();
   }
 }

@@ -16,6 +16,9 @@ class _PageManagerState extends State<PageManager> with ConnectionChecker {
   var _pageIndex = 0;
 
   @override
+  bool get enableMaterialBanner => true;
+
+  @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
