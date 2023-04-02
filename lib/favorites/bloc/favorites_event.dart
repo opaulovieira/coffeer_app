@@ -26,3 +26,10 @@ class RequestUnfavorite extends Equatable implements FavoritesEvent {
   @override
   List<Object?> get props => [];
 }
+
+class CancelUnfavorite extends Equatable implements FavoritesEvent {
+  const CancelUnfavorite();
+
+  @override
+  List<Object?> get props => [];
+}

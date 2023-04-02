@@ -60,9 +60,12 @@ class FavoritesView extends StatelessWidget {
                     );
                   },
                 ).then((shouldUnfavorite) {
+                  final bloc = BlocProvider.of<FavoritesBloc>(context);
+
                   if (shouldUnfavorite != null && shouldUnfavorite) {
-                    BlocProvider.of<FavoritesBloc>(context)
-                        .add(Unfavorite(id: action.key));
+                    bloc.add(Unfavorite(id: action.key));
+                  } else {
+                    bloc.add(const CancelUnfavorite());
                   }
                 });
               }
