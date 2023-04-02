@@ -90,15 +90,11 @@ void main() {
     });
 
     test('stores a Coffee model on cache', () async {
-      await sut.favoriteCoffee(dataUrl);
+      await sut.favoriteCoffee(Coffee(id: '0', url: dataUrl));
 
       verify(() {
         return coffeeLocalStorage.favoriteCoffee(
-          any(
-            that: predicate((coffee) {
-              return coffee is FavoriteCoffee && coffee.url == dataUrl;
-            }),
-          ),
+          FavoriteCoffee(id: '0', url: dataUrl),
         );
       });
     });
