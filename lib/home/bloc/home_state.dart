@@ -13,19 +13,19 @@ class Loading extends Equatable implements HomeState {
 }
 
 class Success extends Equatable implements HomeState {
-  const Success({required this.coffeeUrlList});
+  const Success({required this.coffeeList});
 
-  final List<String> coffeeUrlList;
+  final List<Coffee> coffeeList;
 
   @override
-  List<Object?> get props => [coffeeUrlList];
+  List<Object?> get props => [coffeeList];
 
   @override
   bool? get stringify => false;
 
   @override
   String toString() {
-    return 'Success(coffeeUrlList: $coffeeUrlList)';
+    return 'Success(coffeeUrlList: $coffeeList)';
   }
 }
 

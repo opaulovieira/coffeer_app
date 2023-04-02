@@ -41,6 +41,9 @@ void main() {
       when(() => coffeeLocalStorage.isCoffeeFavorite(any()))
           .thenAnswer((invocation) async => false);
 
+      when(() => coffeeLocalStorage.isCoffeeFavoriteFromUrl(any()))
+          .thenAnswer((invocation) async => false);
+
       when(() => coffeeLocalStorage.getFavoriteCoffees())
           .thenAnswer((invocation) async {
         return const <FavoriteCoffee>[
@@ -65,11 +68,20 @@ void main() {
       expect(url, equals(dataUrl));
     });
 
-    test('verifies if a Coffee is favorite', () async {
+    test('verifies if a Coffee is favorite, from id', () async {
       when(() => coffeeLocalStorage.isCoffeeFavorite(any()))
           .thenAnswer((invocation) async => true);
 
       final isFavorite = await sut.isCoffeeFavorite(coffee.id);
+
+      expect(isFavorite, isTrue);
+    });
+
+    test('verifies if a Coffee is favorite, from url', () async {
+      when(() => coffeeLocalStorage.isCoffeeFavoriteFromUrl(any()))
+          .thenAnswer((invocation) async => true);
+
+      final isFavorite = await sut.isCoffeeFavoriteFromUrl(coffee.url);
 
       expect(isFavorite, isTrue);
     });

@@ -1,8 +1,5 @@
-import 'dart:typed_data';
-
 import 'package:bloc_test/bloc_test.dart';
 import 'package:coffee_repository/coffee_repository.dart';
-import 'package:coffeer_app/favorites/bloc/favorites_bloc.dart';
 import 'package:coffeer_app/favorites/favorites.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,7 +14,7 @@ class _MockFavoritesBloc extends MockBloc<FavoritesEvent, FavoritesState>
 void main() {
   group('FavoritesPage', () {
     testWidgets('renders FavoritesView', (tester) async {
-      await tester.pumpApp(const FavoritePage());
+      await tester.pumpApp(const FavoritesPage());
 
       expect(find.byType(FavoritesView), findsOneWidget);
     });
@@ -55,10 +52,8 @@ void main() {
 
     testWidgets('renders Idle state', (tester) async {
       when(() => bloc.state).thenReturn(
-        Idle(
-          coffeeList: <Coffee>[
-            Coffee(bytes: Uint8List.fromList([1]), url: '')
-          ],
+        const Idle(
+          coffeeList: <Coffee>[Coffee(id: '1', url: '')],
         ),
       );
 
@@ -75,10 +70,8 @@ void main() {
     testWidgets(
         'shows a confirmation dialog when tries to unfavorite an image '
         'and emits Unfavorite event if confirmed', (tester) async {
-      final initialState = Idle(
-        coffeeList: <Coffee>[
-          Coffee(bytes: Uint8List.fromList([1]), url: 'url')
-        ],
+      const initialState = Idle(
+        coffeeList: <Coffee>[Coffee(id: '1', url: 'url')],
       );
 
       whenListen(
@@ -107,7 +100,7 @@ void main() {
 
       await tester.tap(confirmationButtonFinder);
 
-      verify(() => bloc.add(const Unfavorite(key: 'url')));
+      verify(() => bloc.add(const Unfavorite(id: 'url')));
     });
   });
 }

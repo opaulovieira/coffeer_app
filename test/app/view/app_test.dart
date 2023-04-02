@@ -6,10 +6,10 @@ void main() {
   group('App', () {
     LiveTestWidgetsFlutterBinding.ensureInitialized();
 
-    testWidgets('renders HomePage', (tester) async {
+    testWidgets('renders HomeView', (tester) async {
       await tester.pumpWidget(const App());
 
-      expect(find.byType(HomePage), findsOneWidget);
+      expect(find.byType(HomeView), findsOneWidget);
     });
   });
 }

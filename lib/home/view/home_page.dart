@@ -1,6 +1,6 @@
 import 'package:coffee_repository/coffee_repository.dart';
-import 'package:coffeer_app/carousel/carousel.dart';
 import 'package:coffeer_app/home/bloc/home_bloc.dart';
+import 'package:coffeer_app/home/widgets/carousel_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -34,7 +34,7 @@ class HomeView extends StatelessWidget {
                 children: [
                   const Spacer(),
                   CarouselView(
-                    urlList: state.coffeeUrlList,
+                    coffeeList: state.coffeeList,
                     onRequestMore: () {
                       BlocProvider.of<HomeBloc>(context).add(
                         const RequestImages(),

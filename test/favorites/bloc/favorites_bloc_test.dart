@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:bloc_test/bloc_test.dart';
 import 'package:coffee_repository/coffee_repository.dart';
 import 'package:coffeer_app/favorites/bloc/favorites_bloc.dart';
@@ -47,18 +45,16 @@ void main() {
         setUp: () {
           when(() => coffeeRepository.getFavoriteCoffees())
               .thenAnswer((invocation) async {
-            return <Coffee>[
-              Coffee(bytes: Uint8List.fromList([1]), url: 'url'),
+            return const <Coffee>[
+              Coffee(id: '1', url: 'url'),
             ];
           });
         },
         build: () => FavoritesBloc(coffeeRepository: coffeeRepository),
         act: (bloc) => bloc.add(const RequestImages()),
         expect: () => [
-          Idle(
-            coffeeList: [
-              Coffee(bytes: Uint8List.fromList([1]), url: 'url')
-            ],
+          const Idle(
+            coffeeList: [Coffee(id: '1', url: 'url')],
           )
         ],
         verify: (bloc) {
@@ -73,24 +69,20 @@ void main() {
         setUp: () {
           when(() => coffeeRepository.getFavoriteCoffees())
               .thenAnswer((invocation) async {
-            return <Coffee>[
-              Coffee(bytes: Uint8List.fromList([1]), url: 'url'),
+            return const <Coffee>[
+              Coffee(id: '1', url: 'url'),
             ];
           });
         },
-        seed: () => Idle(
-          coffeeList: [
-            Coffee(bytes: Uint8List.fromList([1]), url: 'url')
-          ],
+        seed: () => const Idle(
+          coffeeList: [Coffee(id: '1', url: 'url')],
         ),
         build: () => FavoritesBloc(coffeeRepository: coffeeRepository),
-        act: (bloc) => bloc.add(const RequestUnfavorite(key: 'key')),
+        act: (bloc) => bloc.add(const RequestUnfavorite(id: '1')),
         expect: () => [
-          Idle(
-            coffeeList: [
-              Coffee(bytes: Uint8List.fromList([1]), url: 'url')
-            ],
-            action: const RequestUnfavoriteConfirmation(key: 'key'),
+          const Idle(
+            coffeeList: [Coffee(id: '1', url: 'url')],
+            action: RequestUnfavoriteConfirmation(key: '1'),
           )
         ],
       );
@@ -99,7 +91,7 @@ void main() {
         'emits nothing when state is not Idle',
         seed: () => const Empty(),
         build: () => FavoritesBloc(coffeeRepository: coffeeRepository),
-        act: (bloc) => bloc.add(const RequestUnfavorite(key: 'key')),
+        act: (bloc) => bloc.add(const RequestUnfavorite(id: '1')),
         expect: () => const <FavoritesState>[],
       );
     });
@@ -107,38 +99,34 @@ void main() {
     group('on Unfavorite event', () {
       blocTest<FavoritesBloc, FavoritesState>(
         'updates the Idle state with the new favorites list',
-        seed: () => Idle(
+        seed: () => const Idle(
           coffeeList: [
-            Coffee(bytes: Uint8List.fromList([12]), url: 'url'),
-            Coffee(bytes: Uint8List.fromList([21]), url: 'lru'),
+            Coffee(id: '12', url: 'url'),
+            Coffee(id: '21', url: 'lru'),
           ],
         ),
         build: () => FavoritesBloc(coffeeRepository: coffeeRepository),
-        act: (bloc) => bloc.add(const Unfavorite(key: 'url')),
+        act: (bloc) => bloc.add(const Unfavorite(id: '12')),
         expect: () => [
-          Idle(
-            coffeeList: [
-              Coffee(bytes: Uint8List.fromList([21]), url: 'lru'),
-            ],
+          const Idle(
+            coffeeList: [Coffee(id: '21', url: 'lru')],
           )
         ],
         verify: (bloc) {
-          return verify(() => coffeeRepository.unfavoriteCoffee('url'));
+          return verify(() => coffeeRepository.unfavoriteCoffee('12'));
         },
       );
 
       blocTest<FavoritesBloc, FavoritesState>(
         'emits Empty state when unfavorites the last image',
-        seed: () => Idle(
-          coffeeList: [
-            Coffee(bytes: Uint8List.fromList([12]), url: 'url'),
-          ],
+        seed: () => const Idle(
+          coffeeList: [Coffee(id: '12', url: 'url')],
         ),
         build: () => FavoritesBloc(coffeeRepository: coffeeRepository),
-        act: (bloc) => bloc.add(const Unfavorite(key: 'url')),
+        act: (bloc) => bloc.add(const Unfavorite(id: '12')),
         expect: () => [const Empty()],
         verify: (bloc) {
-          return verify(() => coffeeRepository.unfavoriteCoffee('url'));
+          return verify(() => coffeeRepository.unfavoriteCoffee('12'));
         },
       );
 
@@ -146,10 +134,10 @@ void main() {
         'emits nothing when state is not Idle',
         seed: () => const Empty(),
         build: () => FavoritesBloc(coffeeRepository: coffeeRepository),
-        act: (bloc) => bloc.add(const Unfavorite(key: 'url')),
+        act: (bloc) => bloc.add(const Unfavorite(id: '12')),
         expect: () => <FavoritesState>[],
         verify: (bloc) {
-          return verifyNever(() => coffeeRepository.unfavoriteCoffee('url'));
+          return verifyNever(() => coffeeRepository.unfavoriteCoffee('12'));
         },
       );
     });

@@ -75,7 +75,8 @@ void main() {
       );
     });
 
-    test('returns if a FavoriteCoffee model is stored or not', () async {
+    test('returns if a FavoriteCoffee model is stored or not, based on id',
+        () async {
       final isFavoriteBeforeCaching =
           await sut.isCoffeeFavorite(favoriteCoffee.id);
 
@@ -85,6 +86,21 @@ void main() {
 
       final isFavoriteAfterCaching =
           await sut.isCoffeeFavorite(favoriteCoffee.id);
+
+      expect(isFavoriteAfterCaching, isTrue);
+    });
+
+    test('returns if a FavoriteCoffee model is stored or not, based on url',
+        () async {
+      final isFavoriteBeforeCaching =
+          await sut.isCoffeeFavoriteFromUrl(favoriteCoffee.url);
+
+      expect(isFavoriteBeforeCaching, isFalse);
+
+      when(() => box.get(any<Uint8List>())).thenReturn(favoriteCoffee);
+
+      final isFavoriteAfterCaching =
+          await sut.isCoffeeFavorite(favoriteCoffee.url);
 
       expect(isFavoriteAfterCaching, isTrue);
     });

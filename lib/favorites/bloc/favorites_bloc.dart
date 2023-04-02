@@ -34,7 +34,7 @@ class FavoritesBloc extends Bloc<FavoritesEvent, FavoritesState> {
       final state = this.state;
       if (state is Idle) {
         emit(
-          state.copyWith(action: RequestUnfavoriteConfirmation(key: event.key)),
+          state.copyWith(action: RequestUnfavoriteConfirmation(key: event.id)),
         );
       }
     };
@@ -44,10 +44,10 @@ class FavoritesBloc extends Bloc<FavoritesEvent, FavoritesState> {
     return (event, emit) async {
       final state = this.state;
       if (state is Idle) {
-        await _coffeeRepository.unfavoriteCoffee(event.key);
+        await _coffeeRepository.unfavoriteCoffee(event.id);
 
         final newList = state.coffeeList
-            .where((favoriteCoffee) => favoriteCoffee.url != event.key)
+            .where((favoriteCoffee) => favoriteCoffee.id != event.id)
             .toList();
 
         if (newList.isEmpty) {
