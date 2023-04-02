@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:coffee_repository/coffee_repository.dart';
 import 'package:coffeer_app/carousel/cubit/carousel_cubit.dart';
+import 'package:coffeer_app/favorites/bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -136,6 +137,9 @@ class _CarouselItemState extends State<CarouselItem>
                     } else {
                       cubit.favorite(bytesCompleter.future);
                     }
+
+                    BlocProvider.of<FavoritesBloc>(context)
+                        .add(const RequestImages());
                   },
                   child: Stack(
                     alignment: Alignment.center,
