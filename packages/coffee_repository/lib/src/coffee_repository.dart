@@ -32,6 +32,13 @@ class CoffeeRepository {
     return storage.isCoffeeFavorite(id);
   }
 
+  /// Verify if the [Coffee] is cached on local storage
+  ///
+  /// It uses the [FavoriteCoffee]'s url as key
+  Future<bool> isCoffeeFavoriteFromUrl(String url) {
+    return storage.isCoffeeFavoriteFromUrl(url);
+  }
+
   /// Obtain all favorite [Coffee] from local storage
   Future<List<Coffee>> getFavoriteCoffees() async {
     final favoriteCoffees = await storage.getFavoriteCoffees();

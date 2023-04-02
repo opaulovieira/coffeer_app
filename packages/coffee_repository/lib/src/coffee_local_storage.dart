@@ -36,14 +36,21 @@ class CoffeeLocalStorage {
     return box.values.toList();
   }
 
-  /// Verify if the coffee bytes is cached on local storage
-  ///
-  /// It uses the [FavoriteCoffee]'s id as key
+  /// Verify if the coffee id is cached on local storage
   Future<bool> isCoffeeFavorite(String id) async {
     final box = await storage.favoriteCoffeeBox;
 
     final favoriteCoffee = box.get(id);
 
     return favoriteCoffee != null;
+  }
+
+  /// Verify if the coffee url is cached on local storage
+  Future<bool> isCoffeeFavoriteFromUrl(String url) async {
+    final box = await storage.favoriteCoffeeBox;
+
+    final isFavorite = box.values.any((coffee) => coffee.url == url);
+
+    return isFavorite;
   }
 }
