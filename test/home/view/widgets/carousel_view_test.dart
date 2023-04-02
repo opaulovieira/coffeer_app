@@ -24,8 +24,9 @@ void main() {
       await tester.pumpApp(
         RepositoryProvider<CoffeeRepository>(
           create: (context) => coffeeRepository,
-          child: const CarouselView(
-            coffeeList: [Coffee(id: 'id', url: '')],
+          child: CarouselView(
+            coffeeList: const [Coffee(id: 'id', url: '')],
+            onRequestMore: () {},
           ),
         ),
       );
