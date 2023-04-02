@@ -17,7 +17,7 @@ class FavoriteCoffeeAdapter extends TypeAdapter<FavoriteCoffee> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return FavoriteCoffee(
-      bytes: fields[1] as Uint8List,
+      id: fields[1] as String,
       url: fields[0] as String,
     );
   }
@@ -29,7 +29,7 @@ class FavoriteCoffeeAdapter extends TypeAdapter<FavoriteCoffee> {
       ..writeByte(0)
       ..write(obj.url)
       ..writeByte(1)
-      ..write(obj.bytes);
+      ..write(obj.id);
   }
 
   @override

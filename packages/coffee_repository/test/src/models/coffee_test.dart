@@ -1,18 +1,15 @@
-import 'dart:typed_data';
-
 import 'package:coffee_repository/coffee_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   const dataUrl = 'https://coffee.alexflipnote.dev/W7W69vnJ02A_coffee.jpg';
-  final dataBytes = Uint8List.fromList([1, 2, 3, 4]);
 
   group('Coffee', () {
-    final coffee = Coffee(url: dataUrl, bytes: dataBytes, isFavorite: true);
+    const coffee = Coffee(url: dataUrl, id: '0', isFavorite: true);
 
     test('supports value equality', () {
-      final coffee2 = Coffee(url: dataUrl, bytes: dataBytes, isFavorite: true);
-      final coffee4 = Coffee(url: dataUrl, bytes: dataBytes);
+      const coffee2 = Coffee(url: dataUrl, id: '0', isFavorite: true);
+      const coffee4 = Coffee(url: dataUrl, id: '0');
 
       expect(coffee, equals(coffee2));
       expect(coffee == coffee4, isFalse);
@@ -21,7 +18,7 @@ void main() {
     test('supports copyWith pattern', () {
       final coffee2 = coffee.copyWith(isFavorite: false);
 
-      expect(coffee2, equals(Coffee(url: dataUrl, bytes: dataBytes)));
+      expect(coffee2, equals(const Coffee(url: dataUrl, id: '0')));
     });
   });
 }

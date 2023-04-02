@@ -42,10 +42,10 @@ class FavoritesBloc extends Bloc<FavoritesEvent, FavoritesState> {
 
   EventHandler<Unfavorite, FavoritesState> _onUnfavorite() {
     return (event, emit) async {
-      await _coffeeRepository.unfavoriteCoffee(event.key);
-
       final state = this.state;
       if (state is Idle) {
+        await _coffeeRepository.unfavoriteCoffee(event.key);
+
         final newList = state.coffeeList
             .where((favoriteCoffee) => favoriteCoffee.url != event.key)
             .toList();

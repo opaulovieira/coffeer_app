@@ -1,18 +1,15 @@
-import 'dart:typed_data';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:key_value_storage/key_value_storage.dart';
 
 void main() {
   const dataUrl = 'https://coffee.alexflipnote.dev/W7W69vnJ02A_coffee.jpg';
-  final dataBytes = Uint8List.fromList([1, 2, 3, 4]);
 
   group('FavoriteCoffee', () {
-    final coffee = FavoriteCoffee(url: dataUrl, bytes: dataBytes);
+    const coffee = FavoriteCoffee(url: dataUrl, id: '0');
 
     test('supports value equality', () {
-      final coffee2 = FavoriteCoffee(url: dataUrl, bytes: dataBytes);
-      final coffee3 = FavoriteCoffee(url: '', bytes: dataBytes);
+      const coffee2 = FavoriteCoffee(url: dataUrl, id: '0');
+      const coffee3 = FavoriteCoffee(url: '', id: '0');
 
       expect(coffee, equals(coffee2));
       expect(coffee == coffee3, isFalse);

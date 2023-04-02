@@ -89,7 +89,7 @@ class FavoritesView extends StatelessWidget {
               );
             } else {
               return const Center(
-                child: Text('favorites page'),
+                child: Text('It seems that you have not favorited anything'),
               );
             }
           },
