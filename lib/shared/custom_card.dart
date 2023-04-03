@@ -68,7 +68,11 @@ class CustomCard extends StatelessWidget {
                       onTap: onRightAction,
                       child: Align(
                         alignment: Alignment.centerRight,
-                        child: rightIcon ?? const Icon(Icons.search, size: 20),
+                        child: rightIcon ??
+                            const Icon(
+                              Icons.zoom_in_rounded,
+                              size: 20,
+                            ),
                       ),
                     ),
                   ),
