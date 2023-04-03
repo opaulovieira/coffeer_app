@@ -1,7 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:coffee_repository/coffee_repository.dart';
 import 'package:coffeer_app/favorites/bloc/favorites_bloc.dart';
 import 'package:coffeer_app/home/bloc/bloc.dart' as home;
+import 'package:coffeer_app/shared/custom_network_image.dart';
+import 'package:coffeer_app/shared/shared.dart';
 import 'package:coffeer_app/showcase/showcase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -102,13 +103,15 @@ class _FavoritesViewState extends State<FavoritesView> {
                   child: GridView.count(
                     controller: scrollController,
                     physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32,
-                      vertical: 16,
+                    padding: const EdgeInsets.only(
+                      left: 32,
+                      right: 32,
+                      top: 24,
+                      bottom: 80,
                     ),
                     crossAxisCount: 2,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 8,
+                    mainAxisSpacing: 8,
                     children: coffeeList
                         .map((coffee) => _FavoritesItem(coffee: coffee))
                         .toList(),
@@ -146,80 +149,41 @@ class _FavoritesItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final smallestImageSideDimension = MediaQuery.of(context).size.width * .45;
 
-    return CachedNetworkImage(
-      imageUrl: coffee.url,
-      fit: BoxFit.cover,
-      imageBuilder: (context, image) {
-        return GestureDetector(
-          onTap: () {
+    return CustomNetworkImage(
+      url: coffee.url,
+      onSuccess: (context, image) {
+        return CustomCard(
+          image: image,
+          onImageTap: () {
             openUnfavoriteShowcaseDialog(
               context,
               coffee: coffee,
               onUnfavorite: () => _onUnfavorite(context),
             );
           },
-          onDoubleTap: () => _onUnfavorite(context),
-          child: _FavoritesItemCardShell(image: image),
+          onRightAction: () {
+            openUnfavoriteShowcaseDialog(
+              context,
+              coffee: coffee,
+              onUnfavorite: () => _onUnfavorite(context),
+            );
+          },
+          onLeftAction: () => _onUnfavorite(context),
         );
       },
-      progressIndicatorBuilder: (context, url, download) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: SizedBox(
-            width: smallestImageSideDimension / 2,
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: CircularProgressIndicator(
-                value: download.progress,
-              ),
+      onError: (context) {
+        return SizedBox(
+          width: smallestImageSideDimension / 2,
+          height: smallestImageSideDimension / 2,
+          child: const Center(
+            child: Text(
+              'Sorry :/\nSomething went wrong while loading your image!',
+              style: TextStyle(fontSize: 10),
             ),
           ),
         );
       },
-      errorWidget: (context, url, error) {
-        return Padding(
-          padding: const EdgeInsets.all(8),
-          child: SizedBox(
-            width: smallestImageSideDimension / 2,
-            height: smallestImageSideDimension / 2,
-            child: const Center(
-              child: Text(
-                'Sorry :/\nSomething went wrong while loading your image!',
-                style: TextStyle(fontSize: 10),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _FavoritesItemCardShell extends StatelessWidget {
-  const _FavoritesItemCardShell({required this.image});
-
-  final ImageProvider<Object> image;
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        image: DecorationImage(image: image, fit: BoxFit.cover),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.grey,
-            blurRadius: 12,
-            spreadRadius: 2,
-            blurStyle: BlurStyle.outer,
-          )
-        ],
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          width: 2,
-          strokeAlign: BorderSide.strokeAlignOutside,
-        ),
-      ),
-      // child: child,
+      smallestImageSideDimension: smallestImageSideDimension / 2,
     );
   }
 }

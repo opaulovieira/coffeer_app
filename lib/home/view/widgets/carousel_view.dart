@@ -1,7 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:coffee_repository/coffee_repository.dart';
 import 'package:coffeer_app/favorites/bloc/bloc.dart' as favorites;
 import 'package:coffeer_app/home/bloc/bloc.dart' as home;
+import 'package:coffeer_app/shared/custom_network_image.dart';
+import 'package:coffeer_app/shared/shared.dart';
 import 'package:coffeer_app/showcase/showcase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -70,61 +71,14 @@ class CarouselItem extends StatefulWidget {
   State<CarouselItem> createState() => _CarouselItemState();
 }
 
-class _CarouselItemState extends State<CarouselItem>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: CachedNetworkImage(
-        imageUrl: widget.coffee.url,
-        imageBuilder: (context, image) {
-          return _CarouselItemCard(
-            image: image,
-            coffee: widget.coffee,
-          );
-        },
-        progressIndicatorBuilder: (context, url, download) {
-          return _CarouselItemCardShell(
-            child: SizedBox(
-              height: MediaQuery.of(context).size.width * .45,
-              child: Center(
-                child: FittedBox(
-                  child: CircularProgressIndicator(
-                    value: download.progress,
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
-        errorWidget: (context, url, error) => const SizedBox.shrink(),
-      ),
-    );
-  }
-}
-
-class _CarouselItemCard extends StatelessWidget {
-  const _CarouselItemCard({
-    required this.image,
-    required this.coffee,
-  });
-
-  final Coffee coffee;
-  final ImageProvider<Object> image;
-
+class _CarouselItemState extends State<CarouselItem> {
   void _onToggleAction(BuildContext context) {
     final bloc = BlocProvider.of<home.HomeBloc>(context);
 
-    if (coffee.isFavorite) {
-      bloc.add(home.Unfavorite(id: coffee.id));
+    if (widget.coffee.isFavorite) {
+      bloc.add(home.Unfavorite(id: widget.coffee.id));
     } else {
-      bloc.add(home.Favorite(coffee: coffee));
+      bloc.add(home.Favorite(coffee: widget.coffee));
     }
 
     BlocProvider.of<favorites.FavoritesBloc>(context)
@@ -133,74 +87,39 @@ class _CarouselItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        openToggleFavoriteShowcaseDialog(
-          context,
-          coffee: coffee,
-          onToggleAction: () => _onToggleAction(context),
+    return CustomNetworkImage(
+      url: widget.coffee.url,
+      onSuccess: (context, image) {
+        return CustomCard(
+          image: image,
+          height: MediaQuery.of(context).size.width * .45,
+          flexFit: FlexFit.loose,
+          leftIcon: Icon(
+            widget.coffee.isFavorite
+                ? Icons.favorite_rounded
+                : Icons.favorite_outline_rounded,
+            color: Colors.red,
+            shadows: const [Shadow(color: Colors.white, blurRadius: 8)],
+          ),
+          onRightAction: () {
+            openToggleFavoriteShowcaseDialog(
+              context,
+              coffee: widget.coffee,
+              onToggleAction: () => _onToggleAction(context),
+            );
+          },
+          onLeftAction: () => _onToggleAction(context),
+          onImageTap: () {
+            openToggleFavoriteShowcaseDialog(
+              context,
+              coffee: widget.coffee,
+              onToggleAction: () => _onToggleAction(context),
+            );
+          },
+          onImageDoubleTap: () => _onToggleAction(context),
         );
       },
-      onDoubleTap: () => _onToggleAction(context),
-      child: _CarouselItemCardShell(
-        child: SizedBox(
-          height: MediaQuery.of(context).size.width * .45,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Flexible(
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(16),
-                  ),
-                  child: Image(
-                    image: image,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              const Divider(height: 2, thickness: 2, color: Colors.black),
-              const SizedBox(height: 8),
-              Icon(
-                coffee.isFavorite
-                    ? Icons.favorite_rounded
-                    : Icons.favorite_outline_rounded,
-                color: Colors.red,
-                shadows: const [Shadow(color: Colors.white, blurRadius: 8)],
-              ),
-              const SizedBox(height: 8),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _CarouselItemCardShell extends StatelessWidget {
-  const _CarouselItemCardShell({required this.child});
-
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.grey,
-            blurRadius: 12,
-            spreadRadius: 2,
-            blurStyle: BlurStyle.outer,
-          )
-        ],
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          width: 2,
-          strokeAlign: BorderSide.strokeAlignOutside,
-        ),
-      ),
-      child: child,
+      smallestImageSideDimension: MediaQuery.of(context).size.width * .45,
     );
   }
 }
