@@ -48,7 +48,11 @@ class CustomCard extends StatelessWidget {
                 ),
               ),
             ),
-            const Divider(height: 2, thickness: 2, color: Colors.black),
+            const Divider(
+              height: 2,
+              thickness: 2,
+              color: Color(0xFF7B3911),
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
               child: Row(
@@ -59,7 +63,12 @@ class CustomCard extends StatelessWidget {
                       onTap: onLeftAction,
                       child: Align(
                         alignment: Alignment.centerLeft,
-                        child: leftIcon ?? const Icon(Icons.delete, size: 20),
+                        child: leftIcon ??
+                            const Icon(
+                              Icons.delete_forever_outlined,
+                              color: Colors.black87,
+                              size: 20,
+                            ),
                       ),
                     ),
                   ),
@@ -95,6 +104,7 @@ class CustomCardShell extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
+        color: const Color(0xFFECCC6E),
         boxShadow: const [
           BoxShadow(
             color: Colors.grey,
@@ -107,6 +117,7 @@ class CustomCardShell extends StatelessWidget {
         border: Border.all(
           width: 2,
           strokeAlign: BorderSide.strokeAlignOutside,
+          color: const Color(0xFF7B3911),
         ),
       ),
       child: child,

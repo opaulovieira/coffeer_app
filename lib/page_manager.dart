@@ -35,7 +35,13 @@ class _PageManagerState extends State<PageManager> with ConnectionChecker {
       ],
       child: Scaffold(
         appBar: AppBar(
-          title: Text(_pageIndex == 0 ? 'Home' : 'Favorites'),
+          title: Text(
+            _pageIndex == 0 ? 'Home' : 'Favorites',
+            style: const TextStyle(
+              fontFamily: 'BebasNeue',
+              fontSize: 24,
+            ),
+          ),
         ),
         body: IndexedStack(
           index: _pageIndex,

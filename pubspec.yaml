@@ -37,3 +37,11 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets/poppins/Poppins-Light.ttf
+    - family: BebasNeue
+      fonts:
+        - asset: assets/bebas_neue/BebasNeue-Regular.ttf
