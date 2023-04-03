@@ -54,3 +54,37 @@ $ open coverage/index.html
 ```
 
 ---
+
+## Running the app!
+
+The App opens at the Home screen, where 15 images are being displayed.
+
+At Home, the user can:
+
+- Favorite a image (tapping at the heart button, double tapping at the image)
+- Focus a image (tapping at the zoom button, tapping at the image)
+- Request more images (dragging the screen from top to bottom)
+
+At the Home's bottom right, there is a floating action button, which (at home) navigates 
+to the Favorites screen.
+
+Once in the Favorites screen, the user may encounter:
+
+- An empty screen
+- A grid with all the favorited images
+
+At Favorites, the user can:
+
+- Unfavorite a image (tapping at the trash button)
+- Focus a image (tapping at the zoom button, tapping at the image)
+
+## Encountering errors!
+
+The user may encounter some errors while running the app, due to the App working fetching images 
+from the internet. Because of this, the App is prepared for unexpected errors while fetching, or
+no internet connection.
+
+In case of no internet connection, a red banner will be display at the top. It will automatically 
+closes once the connection is restored, but the user may close it through the 'Ok. Got it' button
+
+There is a 'Try again' button for re-fetching data 
