@@ -1,7 +1,6 @@
 import 'package:coffee_repository/coffee_repository.dart';
 import 'package:coffeer_app/favorites/bloc/favorites_bloc.dart';
 import 'package:coffeer_app/home/bloc/bloc.dart' as home;
-import 'package:coffeer_app/shared/custom_network_image.dart';
 import 'package:coffeer_app/shared/shared.dart';
 import 'package:coffeer_app/showcase/showcase.dart';
 import 'package:flutter/material.dart';
