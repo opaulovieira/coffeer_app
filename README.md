@@ -61,6 +61,8 @@ At Home, the user can:
 - Focus a image (tapping at the zoom button, tapping at the image)
 - Request more images (dragging the screen from top to bottom)
 
+![home_screen](https://github.com/opaulovieira/coffeer_app/blob/master/screenshots/home.png) ![home_screen_focused](https://github.com/opaulovieira/coffeer_app/blob/master/screenshots/home_focused.png)
+
 At the Home's bottom right, there is a floating action button, which (at home) navigates 
 to the Favorites screen.
 
@@ -68,6 +70,8 @@ Once in the Favorites screen, the user may encounter:
 
 - An empty screen
 - A grid with all the favorited images
+
+![favorites_screen](https://github.com/opaulovieira/coffeer_app/blob/master/screenshots/favorites.png) ![favorites_empty](https://github.com/opaulovieira/coffeer_app/blob/master/screenshots/favorites_empty.png) ![favorites_focused](https://github.com/opaulovieira/coffeer_app/blob/master/screenshots/favorites_focused.png) ![favorites_unfavorite](https://github.com/opaulovieira/coffeer_app/blob/master/screenshots/favorites_unfavorite.png) 
 
 At Favorites, the user can:
 
@@ -83,4 +87,6 @@ no internet connection.
 In case of no internet connection, a red banner will be display at the top. It will automatically 
 closes once the connection is restored, but the user may close it through the 'Ok. Got it' button
 
-There is a 'Try again' button for re-fetching data 
+There is a 'Try again' button for re-fetching data
+
+![error_internet](https://github.com/opaulovieira/coffeer_app/blob/master/screenshots/error_internet.png) ![error_unexpected](https://github.com/opaulovieira/coffeer_app/blob/master/screenshots/error_unexpected.png)
