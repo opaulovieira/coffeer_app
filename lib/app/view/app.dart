@@ -1,6 +1,5 @@
 import 'package:coffee_api/coffee_api.dart';
 import 'package:coffee_repository/coffee_repository.dart';
-import 'package:coffeer_app/l10n/l10n.dart';
 import 'package:coffeer_app/page_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -88,8 +87,6 @@ class _AppState extends State<App> {
             accentColor: const Color(0xFFFFDE59),
           ),
         ),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
         home: const PageManager(),
       ),
     );
