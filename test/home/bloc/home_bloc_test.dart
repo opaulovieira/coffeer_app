@@ -167,7 +167,7 @@ void main() {
         },
         build: () => HomeBloc(coffeeRepository: coffeeRepository),
         act: (bloc) => bloc.add(const RequestImages()),
-        expect: () => [const Error(detail: ErrorDetail.internet)],
+        expect: () => [const Error(detail: ErrorDetail.unexpected)],
       );
     });
 
