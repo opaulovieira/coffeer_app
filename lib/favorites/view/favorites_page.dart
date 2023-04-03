@@ -109,8 +109,8 @@ class _FavoritesViewState extends State<FavoritesView> {
                       bottom: 80,
                     ),
                     crossAxisCount: 2,
-                    crossAxisSpacing: 8,
-                    mainAxisSpacing: 8,
+                    crossAxisSpacing: 4,
+                    mainAxisSpacing: 4,
                     children: coffeeList
                         .map((coffee) => _FavoritesItem(coffee: coffee))
                         .toList(),
