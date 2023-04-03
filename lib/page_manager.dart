@@ -34,6 +34,15 @@ class _PageManagerState extends State<PageManager> with ConnectionChecker {
         )
       ],
       child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            _pageIndex == 0 ? 'Home' : 'Favorites',
+            style: const TextStyle(
+              fontFamily: 'BebasNeue',
+              fontSize: 24,
+            ),
+          ),
+        ),
         body: IndexedStack(
           index: _pageIndex,
           children: const [
@@ -41,19 +50,20 @@ class _PageManagerState extends State<PageManager> with ConnectionChecker {
             favorites.FavoritesView(),
           ],
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_filled),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.favorite_rounded),
-              label: 'Favorites',
-            ),
-          ],
-          onTap: (index) => setState(() => _pageIndex = index),
-          currentIndex: _pageIndex,
+        floatingActionButton: FloatingActionButton.extended(
+          label: Text(_pageIndex == 1 ? 'Home' : 'Favorites'),
+          icon: Icon(
+            _pageIndex == 1 ? Icons.home_filled : Icons.favorite_rounded,
+          ),
+          onPressed: () {
+            setState(() {
+              if (_pageIndex == 0) {
+                _pageIndex = 1;
+              } else {
+                _pageIndex = 0;
+              }
+            });
+          },
         ),
       ),
     );

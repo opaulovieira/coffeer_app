@@ -1,9 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:coffee_repository/coffee_repository.dart';
 import 'package:coffeer_app/favorites/bloc/favorites_bloc.dart';
 import 'package:coffeer_app/home/bloc/bloc.dart' as home;
+import 'package:coffeer_app/shared/shared.dart';
 import 'package:coffeer_app/showcase/showcase.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -22,8 +21,21 @@ class FavoritesPage extends StatelessWidget {
   }
 }
 
-class FavoritesView extends StatelessWidget {
+class FavoritesView extends StatefulWidget {
   const FavoritesView({super.key});
+
+  @override
+  State<FavoritesView> createState() => _FavoritesViewState();
+}
+
+class _FavoritesViewState extends State<FavoritesView> {
+  final scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,24 +91,30 @@ class FavoritesView extends StatelessWidget {
             if (state is Idle) {
               final coffeeList = state.coffeeList;
 
-              final tableRows = coffeeList.slices(2).map(
-                (row) {
-                  return TableRow(
-                    children: [
-                      _FavoritesItem(coffee: row[0]),
-                      if (row.length.isOdd)
-                        const SizedBox.shrink()
-                      else
-                        _FavoritesItem(coffee: row[1]),
-                    ],
-                  );
-                },
-              );
-
-              return SingleChildScrollView(
+              return Padding(
                 padding: const EdgeInsets.all(4),
-                child: Table(
-                  children: tableRows.toList(),
+                child: Scrollbar(
+                  thickness: 8,
+                  thumbVisibility: true,
+                  radius: const Radius.circular(4),
+                  controller: scrollController,
+                  interactive: true,
+                  child: GridView.count(
+                    controller: scrollController,
+                    physics: const BouncingScrollPhysics(),
+                    padding: const EdgeInsets.only(
+                      left: 32,
+                      right: 32,
+                      top: 24,
+                      bottom: 80,
+                    ),
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 4,
+                    mainAxisSpacing: 4,
+                    children: coffeeList
+                        .map((coffee) => _FavoritesItem(coffee: coffee))
+                        .toList(),
+                  ),
                 ),
               );
             } else if (state is Loading) {
@@ -130,57 +148,41 @@ class _FavoritesItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final smallestImageSideDimension = MediaQuery.of(context).size.width * .45;
 
-    return CachedNetworkImage(
-      imageUrl: coffee.url,
-      fit: BoxFit.fitHeight,
-      imageBuilder: (context, image) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-          child: GestureDetector(
-            onTap: () {
-              openUnfavoriteShowcaseDialog(
-                context,
-                coffee: coffee,
-                onUnfavorite: () => _onUnfavorite(context),
-              );
-            },
-            onDoubleTap: () => _onUnfavorite(context),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: Image(image: image),
+    return CustomNetworkImage(
+      url: coffee.url,
+      onSuccess: (context, image) {
+        return CustomCard(
+          image: image,
+          onImageTap: () {
+            openUnfavoriteShowcaseDialog(
+              context,
+              coffee: coffee,
+              onUnfavorite: () => _onUnfavorite(context),
+            );
+          },
+          onRightAction: () {
+            openUnfavoriteShowcaseDialog(
+              context,
+              coffee: coffee,
+              onUnfavorite: () => _onUnfavorite(context),
+            );
+          },
+          onLeftAction: () => _onUnfavorite(context),
+        );
+      },
+      onError: (context) {
+        return SizedBox(
+          width: smallestImageSideDimension / 2,
+          height: smallestImageSideDimension / 2,
+          child: const Center(
+            child: Text(
+              'Sorry :/\nSomething went wrong while loading your image!',
+              style: TextStyle(fontSize: 10),
             ),
           ),
         );
       },
-      progressIndicatorBuilder: (context, url, download) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: SizedBox(
-            width: smallestImageSideDimension / 2,
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: CircularProgressIndicator(
-                value: download.progress,
-              ),
-            ),
-          ),
-        );
-      },
-      errorWidget: (context, url, error) {
-        return Padding(
-          padding: const EdgeInsets.all(8),
-          child: SizedBox(
-            width: smallestImageSideDimension / 2,
-            height: smallestImageSideDimension / 2,
-            child: const Center(
-              child: Text(
-                'Sorry :/\nSomething went wrong while loading your image!',
-                style: TextStyle(fontSize: 10),
-              ),
-            ),
-          ),
-        );
-      },
+      smallestImageSideDimension: smallestImageSideDimension / 2,
     );
   }
 }

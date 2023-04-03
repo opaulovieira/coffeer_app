@@ -1,6 +1,6 @@
 name: coffeer_app
 description: A Very Good Project created by Very Good CLI.
-version: 1.0.0+1
+version: 2.0.0
 publish_to: none
 
 environment:
@@ -37,3 +37,11 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   generate: true
+
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets/poppins/Poppins-Light.ttf
+    - family: BebasNeue
+      fonts:
+        - asset: assets/bebas_neue/BebasNeue-Regular.ttf

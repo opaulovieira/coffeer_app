@@ -65,7 +65,10 @@ class ShowcaseDialog extends StatelessWidget {
 
           Navigator.of(context).pop();
         },
-        icon: const Icon(Icons.delete),
+        icon: const Icon(
+          Icons.delete_forever_outlined,
+          color: Colors.black87,
+        ),
       ),
     );
   }
